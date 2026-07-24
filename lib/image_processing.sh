@@ -1,4 +1,15 @@
 #!/bin/bash
+#
+#==============================================================================
+#  Project:     MoonPhaseWallpaper
+#------------------------------------------------------------------------------
+#  File:        image_processing.sh
+#  Author:      Uli Treuer
+#  Purpose:     Provides image processing and handling for MoonPhaseWallpaper.
+#
+#  Copyright (c) 2026 Uli Treuer
+#  License:     (to be added)
+#==============================================================================
 
 #==================================================================================================
 # image_processing

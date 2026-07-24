@@ -1,8 +1,14 @@
-###############################################################################
-# astronomy.awk
+#==============================================================================
+#  Project:     MoonPhaseWallpaper
+#------------------------------------------------------------------------------
+#  File:        astronomy.awk
+#  Author:      Uli Treuer
+#  Purpose:     Provides common astronomical AWK functions used by multiple
+#               bash functions.
 #
-# Common astronomical AWK functions used by multiple Bash functions.
-###############################################################################
+#  Copyright (c) 2026 Uli Treuer
+#  License:     (to be added)
+#==============================================================================
 
 ###############################################################################
 # calc_julian_date

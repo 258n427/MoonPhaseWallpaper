@@ -1,4 +1,15 @@
 #!/bin/bash
+#
+#==============================================================================
+#  Project:     MoonPhaseWallpaper
+#------------------------------------------------------------------------------
+#  File:        moon_wallpaper.sh
+#  Author:      Uli Treuer
+#  Purpose:     Orchestrates the creation process of the MoonPhaseWallpaper.
+#
+#  Copyright (c) 2026 Uli Treuer
+#  License:     (to be added)
+#==============================================================================
 
 #==================================================================================================
 # Moon Phase Wallpaper Generator

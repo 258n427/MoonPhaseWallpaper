@@ -1,4 +1,16 @@
 #!/bin/bash
+#
+#==============================================================================
+#  Project:     MoonPhaseWallpaper
+#------------------------------------------------------------------------------
+#  File:        wallpaper.sh
+#  Author:      Uli Treuer
+#  Purpose:     Installs the generated image as a wallpaper on teh KDE desktops
+#               for MoonPhaseWallpaper.
+#
+#  Copyright (c) 2026 Uli Treuer
+#  License:     (to be added)
+#==============================================================================
 
 #==================================================================================================
 # set_wallpaper

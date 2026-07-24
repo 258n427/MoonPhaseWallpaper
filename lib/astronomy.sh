@@ -1,4 +1,15 @@
 #!/bin/bash
+#
+#==============================================================================
+#  Project:     MoonPhaseWallpaper
+#------------------------------------------------------------------------------
+#  File:        astronomy.sh
+#  Author:      Uli Treuer
+#  Purpose:     Provides astronomical calculations for MoonPhaseWallpaper.
+#
+#  Copyright (c) 2026 Uli Treuer
+#  License:     (to be added)
+#==============================================================================
 
 #==================================================================================================
 # calc_moon_rotation

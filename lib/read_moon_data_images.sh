@@ -1,4 +1,16 @@
 #!/bin/bash
+#
+#==============================================================================
+#  Project:     MoonPhaseWallpaper
+#------------------------------------------------------------------------------
+#  File:        read_moon_data_images.sh
+#  Author:      Uli Treuer
+#  Purpose:     Downloads and extracts moon data information and images from
+#               the NASA web page for MoonPhaseWallpaper.
+#
+#  Copyright (c) 2026 Uli Treuer
+#  License:     (to be added)
+#==============================================================================
 
 #==================================================================================================
 # read_moon_info
