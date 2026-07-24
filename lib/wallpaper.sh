@@ -103,9 +103,16 @@ local elapsed
 
     # set wallpaper (now applies to Main Screen)
     # Set the updated back.png file as wallpaper on screen 1 (which is the second monitor).
+    local black_image
+    local wallpaper_image
+    black_image="$wdir/images/black-image.png"
+    wallpaper_image="$wdir/images/moon_wallpaper.png"
+
     local js_script
     js_script=$(<"$wdir/lib/set_wallpaper.js")
-    logd "Running JaVaScript to replace wallpaper."
+    js_script="${js_script//__BLACK_IMAGE__/$black_image}"
+    js_script="${js_script//__WALLPAPER_IMAGE__/$wallpaper_image}"
+    logd "Executing Plasma JavaScript to update wallpaper."
     sudo -u "$current_user" \
         DISPLAY=:0 \
         DBUS_SESSION_BUS_ADDRESS="$BUS" \
