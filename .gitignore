@@ -1,0 +1,11 @@
+# Runtime-generated data
+data/
+
+# Runtime-generated wallpaper
+images/moon_wallpaper.png
+
+# Development archive (before Git)
+_archive/
+
+# Privat project notes
+GitHub_Plan.odt
