@@ -103,22 +103,14 @@ local elapsed
 
     # set wallpaper (now applies to Main Screen)
     # Set the updated back.png file as wallpaper on screen 1 (which is the second monitor).
-    sudo -u "$current_user" DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS="$BUS" qdbus-qt6 org.kde.plasmashell /PlasmaShell evaluateScript '
-    var allDesktops = desktops();
-    for (i=0; i<allDesktops.length; i++)
-    {
-        d = allDesktops[i];
-
-        if (d.screen == 1)
-        {
-            d.wallpaperPlugin = "org.kde.image";
-            d.currentConfigGroup = ["Wallpaper", "org.kde.image", "General"];
-
-            d.writeConfig("Image", "file:///home/uli/Projects/MoonPhaseWallpaper/images/black-image.png");
-            d.writeConfig("Image", "file:///home/uli/Projects/MoonPhaseWallpaper/images/moon_wallpaper.png");
-        }
-    }
-    '
+    local js_script
+    js_script=$(<"$wdir/lib/set_wallpaper.js")
+    logd "Running JaVaScript to replace wallpaper."
+    sudo -u "$current_user" \
+        DISPLAY=:0 \
+        DBUS_SESSION_BUS_ADDRESS="$BUS" \
+        qdbus-qt6 org.kde.plasmashell /PlasmaShell evaluateScript \
+        "$js_script"
 
     # switch back to previous Activity (if we switched before)
     if [[ "$CUR" != "$MAIN_ACTIVITY_ID" ]]; then
