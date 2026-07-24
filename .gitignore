@@ -9,3 +9,6 @@ _archive/
 
 # Privat project notes
 GitHub_Plan.odt
+
+# LibreOffice lock files
+.~lock*
