@@ -52,17 +52,17 @@ source "$wdir/lib/image_processing.sh"
 source "$wdir/lib/kde_activity_tools.sh"
 
 #evaluate command line options
-force_run=false
-debug=false
-verbose=false
+force_run_mode=false
+debug_mode=false
+verbose_mode=false
 while getopts ":dfv" opt; do
     case "$opt" in
         d)
-            debug=true ;;
+            debug_mode=true ;;
         f)
-            force_run=true ;;
+            force_run_mode=true ;;
         v)
-            verbose=true ;;
+            verbose_mode=true ;;
         \?)
             echo "Unknown option: -$OPTARG"
             exit 1
@@ -73,7 +73,7 @@ done
 # define a small logger function to be used when verbose is true
 logv()
 {
-    if $debug || $verbose; then
+    if $debug_mode || $verbose_mode; then
         echo "$@"
     fi
     return 0
@@ -82,7 +82,7 @@ logv()
 # define a small logger function to be used when debug is true
 logd()
 {
-    if $debug; then
+    if $debug_mode; then
         echo "$@"
     fi
     return 0
@@ -112,7 +112,7 @@ moonstatus=()
 #--------------------------------------------------------------------------------------------------
 # Check whether a new run is actually needed. Script needs to run only once per hour
 logtimestamp="$(date "+%d-%b-%Y") $(date "+%H:00")"
-if ! $force_run; then
+if ! $force_run_mode; then
     # If logfile exists, compare
     if [[ -f "$logfile" ]]; then
         read -r previous < "$logfile"

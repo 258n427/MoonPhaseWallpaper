@@ -5,7 +5,7 @@
 #------------------------------------------------------------------------------
 #  File:        wallpaper.sh
 #  Author:      Uli Treuer
-#  Purpose:     Installs the generated image as a wallpaper on teh KDE desktops
+#  Purpose:     Installs the generated image as a wallpaper on a KDE desktop
 #               for MoonPhaseWallpaper.
 #
 #  Copyright (c) 2026 Uli Treuer
@@ -15,14 +15,14 @@
 #==================================================================================================
 # set_wallpaper
 #
-# Set the completed image back.png as the new wallpaper on second display in Activity 'Main Screen'
+# Set the generated image as the new wallpaper Activity and Screen specified during configuration.
 # using Plasma 6 functionality.
 # Comments and considerations:
 #       - updating the wallpaper only works for the currently active Activity. Therefore we need to
-#         switch to 'Main Activity' before updating the wallpaper and then back to the
+#         switch to the target Activity before updating the wallpaper and then back to the
 #         original Activity. To be able to do that we need to determine the currently active
-#         Activity, remember it, switch to 'Main Activity', change the wallpaper, and change back
-#         to the Activity we remembered.
+#         Activity, remember it, switch to the target Activity, change the wallpaper, and change
+#         back to the Activity we remembered.
 #       - Updating the wallpaper only works if the new wallpaper has a different name/path than the
 #         current wallpaper. Otherwise KDE thinks that nothing has changed and will not update the
 #         wallpaper. Therefore we need to briefly set the wallpaper to a 'black image' before
@@ -30,47 +30,30 @@
 #==================================================================================================
 set_wallpaper()
 {
-local i
-local current_user
-local BUS
-local block
-local quoted
-local value
-local count
-local ACT_ID
-local ACT_NAME
-local ACT_DESC
-local ACT_ICON
-local MAIN_ACTIVITY_ID
-local CURRENT_ACTIVITY_ID
-local ACTIVITIES_RAW
-local -A ACTIVITY_MAP
-local start
-local end
-local elapsed
+local current_user BUS
+local target_activity_id target_screen
+local current_activity_id
+local black_image wallpaper_image js_script
+local start end elapsed
 
     start=$(date +%s.%N)
     logv "In set_wallpaper"
 
-    # find the ID of the 'Main Screen' Activity
-    activity_id_from_name "Main Screen" MAIN_ACTIVITY_ID
+    # get the configured target activity and screen
+    conf_get_target_activity target_activity_id target_screen
 
     # remember current activity
-    get_current_activity_id CURRENT_ACTIVITY_ID
+    get_current_activity_id current_activity_id
 
-    # switch to 'Main Screen' Activity (if not currently active)
-    switch_to_activity "$MAIN_ACTIVITY_ID"
+    # switch to the configured target activity
+    switch_to_activity "$target_activity_id"
 
-
-    # set wallpaper (now applies to Main Screen)
-    # Set the updated back.png file as wallpaper on screen 1 (which is the second monitor).
-    local black_image
-    local wallpaper_image
+    # # Set wallpaper on the configured Activity and screen.
     black_image="$wdir/images/black-image.png"
     wallpaper_image="$wdir/images/moon_wallpaper.png"
 
-    local js_script
     js_script=$(<"$wdir/lib/set_wallpaper.js")
+    js_script="${js_script//__SCREEN__/$target_screen}"
     js_script="${js_script//__BLACK_IMAGE__/$black_image}"
     js_script="${js_script//__WALLPAPER_IMAGE__/$wallpaper_image}"
     logd "Executing Plasma JavaScript to update wallpaper."
@@ -82,8 +65,8 @@ local elapsed
         qdbus-qt6 org.kde.plasmashell /PlasmaShell evaluateScript \
         "$js_script"
 
-    # switch back to previous Activity (if we switched before)
-    switch_to_activity "$CURRENT_ACTIVITY_ID"
+    # switch back to previous Activity
+    switch_to_activity "$current_activity_id"
 
     logv "Wallpaper replaced."
     end=$(date +%s.%N)

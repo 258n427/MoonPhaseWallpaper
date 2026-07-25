@@ -19,9 +19,7 @@
 #==================================================================================================
 read_moon_info()
 {
-local start
-local end
-local elapsed
+local start end elapsed
 
     start=$(date +%s.%N)
     logv "In read_moon_info"
@@ -69,19 +67,12 @@ local selected_year
 local num
 local line_index
 local raw_line
-local age
-local age1
-local t
-local d
-local h
-local m
+local age age1
+local t d h m
 local tmp
-local utc_doy
-local utc_hour
+local utc_doy utc_hour
 local first_hour
-local start
-local end
-local elapsed
+local start end elapsed
 
     start=$(date +%s.%N)
     logv "In calculate_moon_metadata"
@@ -178,8 +169,6 @@ local elapsed
                 calc_moonrise_set \
                     "$daily_data" \
                     "$selected_year" \
-                    "$OBSERVER_LAT" \
-                    "$OBSERVER_LON" \
                     "$(date --utc -d "$i days ago" +"%H")"
             )
 
@@ -225,9 +214,7 @@ local elapsed
 download_moon_images()
 {
 local i
-local start
-local end
-local elapsed
+local start end elapsed
 
     start=$(date +%s.%N)
     logv "In download_moon_images"

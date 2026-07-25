@@ -33,12 +33,10 @@ calc_moon_rotation()
     local ra="$3"
     local dec="$4"
     local axis="$5"
+    local latitude longitude
 
-    #
-    # Gundelfingen
-    #
-    local latitude="$OBSERVER_LAT"
-    local longitude="$OBSERVER_LON"
+    # Get observer location as defined by configuration
+    conf_get_observer_data latitude longitude
 
     #######################################################################
     # Extract year, month, day and hour from the strings
@@ -152,8 +150,8 @@ calc_moon_rotation()
 # Calculates moonrise, moonset and current horizon status.
 #
 # Input:
-#   $1  year
-#   $2  day of year (1..366)
+#   $1  moondata for the current day
+#   $2  year
 #   $3  current UTC hour
 #
 # Output (stdout):
@@ -175,9 +173,11 @@ calc_moonrise_set()
 {
     local data="$1"
     local year="$2"
-    local latitude="$3"
-    local longitude="$4"
-    local current_hour="$5"
+    local current_hour="$3"
+    local latitude longitude
+
+    # Get observer location as defined by configuration
+    conf_get_observer_data latitude longitude
 
     awk \
         -i "$AWK_ASTRONOMY" \
