@@ -38,11 +38,11 @@ local current_activity_id
 #==================================================================================================
 get_current_activity_id()
 {
-local -n current_activity=$1
+local -n activity_id_ref=$1
 local BUS
 
     get_activity_bus BUS
-    current_activity=$(qdbus-qt6 --bus "$BUS" org.kde.ActivityManager /ActivityManager/Activities CurrentActivity)
+    activity_id_ref=$(qdbus-qt6 --bus "$BUS" org.kde.ActivityManager /ActivityManager/Activities CurrentActivity)
 }
 
 #==================================================================================================
@@ -53,19 +53,19 @@ local BUS
 activity_id_from_name()
 {
 local activity_name=$1
-local -n activity_id=$2
+local -n activity_id_ref=$2
 
 local -A activity_map
 
     logd "In activity_id_from_name"
     create_activity_map activity_map
     # Get ID of requested activity from activity_map
-    activity_id="${activity_map["$activity_name"]}"
-    if [ -z "$activity_id" ]; then
+    activity_id_ref="${activity_map["$activity_name"]}"
+    if [ -z "$activity_id_ref" ]; then
         logv "Error: Activity '$activity_name' not found. Exiting script now."
         exit 1
     fi
-    logd "Using Activity ID: $activity_id"
+    logd "Using Activity ID: $activity_id_ref"
 }
 
 #==================================================================================================
@@ -75,11 +75,11 @@ local -A activity_map
 #==================================================================================================
 get_activity_bus()
 {
-local -n bus=$1
+local -n bus_ref=$1
 local current_user
 
     get_current_user current_user
-    bus="unix:path=/run/user/$(id -u "$current_user")/bus"
+    bus_ref="unix:path=/run/user/$(id -u "$current_user")/bus"
 }
 
 #==================================================================================================
@@ -89,9 +89,9 @@ local current_user
 #==================================================================================================
 get_current_user()
 {
-local -n user=$1
+local -n user_ref=$1
 
-    user=$(id -un)
+    user_ref=$(id -un)
 }
 
 #==================================================================================================
@@ -101,7 +101,7 @@ local -n user=$1
 #==================================================================================================
 create_activity_map()
 {
-local -n activity_map=$1
+local -n map_ref=$1
 
 local current_user
 local BUS
@@ -140,7 +140,7 @@ local ACT_ID ACT_NAME ACT_DESC ACT_ICON
             ((count >= 4)) && break
         done <<< "$quoted"
 
-        activity_map["$ACT_NAME"]="$ACT_ID"
+        map_ref["$ACT_NAME"]="$ACT_ID"
         logd "Activity Name | ID: $ACT_NAME | $ACT_ID"
 
     done < <(grep -oP '\[Argument: \(ssssi\).*?\]' <<< "$ACTIVITIES_RAW")
