@@ -48,6 +48,7 @@ source "$wdir/lib/astronomy.sh"
 source "$wdir/lib/wallpaper.sh"
 source "$wdir/lib/read_moon_data_images.sh"
 source "$wdir/lib/image_processing.sh"
+source "$wdir/lib/kde_activity_tools.sh"
 
 #evaluate command line options
 force_run=false

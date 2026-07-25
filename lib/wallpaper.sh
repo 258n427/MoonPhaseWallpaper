@@ -42,7 +42,7 @@ local ACT_NAME
 local ACT_DESC
 local ACT_ICON
 local MAIN_ACTIVITY_ID
-local CUR
+local CURRENT_ACTIVITY_ID
 local ACTIVITIES_RAW
 local -A ACTIVITY_MAP
 local start
@@ -51,55 +51,16 @@ local elapsed
 
     start=$(date +%s.%N)
     logv "In set_wallpaper"
-    current_user=$(id -un) # user name of the current user
-    BUS="unix:path=/run/user/$(id -u "$current_user")/bus"
 
-    # Get list of activities via DBus
-    ACTIVITIES_RAW=$(sudo -u "$current_user" DBUS_SESSION_BUS_ADDRESS="$BUS" qdbus-qt6 --literal org.kde.ActivityManager /ActivityManager/Activities ListActivitiesWithInformation)
-
-    # Use process substitution to avoid subshell
-    i=1
-    while read -r block; do
-        # Extract quoted strings
-        quoted=$(echo "$block" | grep -oP '"[^"]*"')
-
-        # Read first 4 values, remove surrounding quotes
-        count=0
-        while read -r value; do
-            value="${value%\"}"
-            value="${value#\"}"
-            case $count in
-                0) ACT_ID="$value" ;;
-                1) ACT_NAME="$value" ;;
-                2) ACT_DESC="$value" ;;
-                3) ACT_ICON="$value" ;;
-            esac
-            ((count++))
-            [[ $count -ge 4 ]] && break
-        done <<< "$quoted"
-
-        ACTIVITY_MAP["$ACT_NAME"]="$ACT_ID"
-        logd "Activity Name | ID: $ACT_NAME | $ACT_ID"
-
-        ((i++))
-    done < <(echo "$ACTIVITIES_RAW" | grep -oP '\[Argument: \(ssssi\).*?\]')
-
-    # Get ID of "Main Screen"
-    MAIN_ACTIVITY_ID="${ACTIVITY_MAP["Main Screen"]}"
-    if [ -z "$MAIN_ACTIVITY_ID" ]; then
-        logv "Error: Activity 'Main Screen' not found. Exiting script now."
-        exit 1
-    fi
-    logd "Using Main Screen Activity ID: $MAIN_ACTIVITY_ID"
+    # find the ID of the 'Main Screen' Activity
+    activity_id_from_name "Main Screen" MAIN_ACTIVITY_ID
 
     # remember current activity
-    CUR=$(qdbus-qt6 --bus "$BUS" org.kde.ActivityManager /ActivityManager/Activities CurrentActivity)
+    get_current_activity_id CURRENT_ACTIVITY_ID
 
-    # switch to Main Screen Activity (if not currently active)
-    if [[ "$CUR" != "$MAIN_ACTIVITY_ID" ]]; then
-        qdbus-qt6 --bus "$BUS" org.kde.ActivityManager /ActivityManager/Activities SetCurrentActivity "$MAIN_ACTIVITY_ID"
-        #sleep 1
-    fi
+    # switch to 'Main Screen' Activity (if not currently active)
+    switch_to_activity "$MAIN_ACTIVITY_ID"
+
 
     # set wallpaper (now applies to Main Screen)
     # Set the updated back.png file as wallpaper on screen 1 (which is the second monitor).
@@ -113,6 +74,8 @@ local elapsed
     js_script="${js_script//__BLACK_IMAGE__/$black_image}"
     js_script="${js_script//__WALLPAPER_IMAGE__/$wallpaper_image}"
     logd "Executing Plasma JavaScript to update wallpaper."
+    get_activity_bus BUS
+    get_current_user current_user
     sudo -u "$current_user" \
         DISPLAY=:0 \
         DBUS_SESSION_BUS_ADDRESS="$BUS" \
@@ -120,10 +83,8 @@ local elapsed
         "$js_script"
 
     # switch back to previous Activity (if we switched before)
-    if [[ "$CUR" != "$MAIN_ACTIVITY_ID" ]]; then
-        #sleep 1
-        qdbus-qt6 --bus "$BUS" org.kde.ActivityManager /ActivityManager/Activities SetCurrentActivity "$CUR"
-    fi
+    switch_to_activity "$CURRENT_ACTIVITY_ID"
+
     logv "Wallpaper replaced."
     end=$(date +%s.%N)
     elapsed=$(awk "BEGIN { printf \"%.2f\", $end - $start }")
