@@ -3,7 +3,7 @@
 #==============================================================================
 #  Project:     MoonPhaseWallpaper
 #------------------------------------------------------------------------------
-#  File:        config.sh
+#  File:        configuration.sh
 #  Author:      Uli Treuer
 #  Purpose:     Defines configuration information and URLs for MoonPhaseWallpaper.
 #
@@ -12,38 +12,27 @@
 #==============================================================================
 
 #==================================================================================================
-# read_config
+# read_configuration
 #
 # Define configuration:
-# - all required/used directories
 # - observer coordinates
 #==================================================================================================
-read_config()
+read_configuration()
 {
 local start
 local end
 local elapsed
 
     start=$(date +%s.%N)
-    logv "In read_config"
-    # define directories
-    readonly imdir="$wdir/images"    # image directory
-    mkdir -p "$imdir"
-    readonly ddir="$wdir/data"       # data directory
-    mkdir -p "$ddir"
-    readonly logfile="$ddir/last_run.log"
-    readonly AWK_ASTRONOMY="$wdir/lib/astronomy.awk"
+    logv "In read_configuration"
 
     # latitude and longitude of Gundelfingen
     readonly OBSERVER_LAT=48.0394
     readonly OBSERVER_LON=7.8664
 
-    logd "wdir:   $wdir"
-    logd "imdir:  $imdir"
-    logd "ddir:   $ddir"
-    logd "AWKlib: $AWK_ASTRONOMY"
     logd "LAT:    $OBSERVER_LAT"
     logd "LONG:   $OBSERVER_LON"
+
     end=$(date +%s.%N)
     elapsed=$(awk "BEGIN { printf \"%.2f\", $end - $start }")
     logd "Completed in ${elapsed} seconds."

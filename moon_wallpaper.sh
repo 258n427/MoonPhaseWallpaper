@@ -43,7 +43,8 @@ SECONDS=0
 # (directory in which the script is located - no matter what it is called)
 readonly wdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-source "$wdir/lib/config.sh"
+source "$wdir/lib/configuration.sh"
+source "$wdir/lib/directories.sh"
 source "$wdir/lib/astronomy.sh"
 source "$wdir/lib/wallpaper.sh"
 source "$wdir/lib/read_moon_data_images.sh"
@@ -87,8 +88,11 @@ logd()
     return 0
 }
 
+# define all working directories
+set_directories
+
 # read all configuration data
-read_config
+read_configuration
 
 # declare all global arrays which are needed
 moonimage=()

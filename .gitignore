@@ -12,3 +12,6 @@ GitHub_Plan.odt
 
 # LibreOffice lock files
 .~lock*
+
+# scratchboard
+parkplatz.sh
