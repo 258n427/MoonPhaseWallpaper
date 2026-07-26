@@ -30,7 +30,7 @@
 #==================================================================================================
 set_wallpaper()
 {
-local current_user BUS
+local BUS
 local target_activity_id target_screen
 local current_activity_id
 local black_image wallpaper_image js_script
@@ -58,9 +58,7 @@ local start end elapsed
     js_script="${js_script//__WALLPAPER_IMAGE__/$wallpaper_image}"
     logd "Executing Plasma JavaScript to update wallpaper."
     get_activity_bus BUS
-    get_current_user current_user
-    sudo -u "$current_user" \
-        DISPLAY=:0 \
+    DISPLAY=:0 \
         DBUS_SESSION_BUS_ADDRESS="$BUS" \
         qdbus-qt6 org.kde.plasmashell /PlasmaShell evaluateScript \
         "$js_script"

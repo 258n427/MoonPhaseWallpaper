@@ -114,8 +114,7 @@ local ACT_ID ACT_NAME ACT_DESC ACT_ICON
     logd "In create_activity_map"
     get_activity_bus BUS
 
-    get_current_user current_user
-    ACTIVITIES_RAW=$(sudo -u "$current_user" \
+    ACTIVITIES_RAW=$(
         DBUS_SESSION_BUS_ADDRESS="$BUS" \
         qdbus-qt6 --literal \
         org.kde.ActivityManager \
@@ -157,14 +156,12 @@ local ACT_ID ACT_NAME ACT_DESC ACT_ICON
 get_num_screens()
 {
 local -n num_screens_ref=$1
-local current_user
 local BUS
 
     logd "In get_num_screens"
     get_activity_bus BUS
-    get_current_user current_user
     js_script=$(<"$wdir/lib/get_num_screens.js")
-    num_screens_ref=$(sudo -u "$current_user" \
+    num_screens_ref=$(
         DISPLAY=:0 \
         DBUS_SESSION_BUS_ADDRESS="$BUS" \
         qdbus-qt6 org.kde.plasmashell /PlasmaShell evaluateScript \
