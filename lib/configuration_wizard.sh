@@ -261,7 +261,9 @@ local answer
     done
 
     if [[ $answer == y ]]; then
-        echo " User answered yes."
+        echo " "
+        echo " Saving configuration..."
+#        conf_write_configuration()
         echo " "
         echo " Configuration saved successfully."
         echo " "
@@ -279,7 +281,7 @@ local answer
     fi
     echo " "
     echo " Note:"
-    echo " The configuration can be repeated or updated anytime by running"
+    echo " You can rerun the configuration wizard at any time by running"
     echo "     moon_wallpaper.sh -c"
     echo " "
     echo " -------------------------------------------------------------------------------"
