@@ -102,6 +102,7 @@ local -n user_ref=$1
 create_activity_map()
 {
 local -n map_ref=$1
+local -n num_activities_ref=$2
 
 local current_user
 local BUS
@@ -121,6 +122,7 @@ local ACT_ID ACT_NAME ACT_DESC ACT_ICON
         /ActivityManager/Activities \
         ListActivitiesWithInformation)
 
+    num_activities_ref=0
     while read -r block; do
         quoted=$(grep -oP '"[^"]*"' <<< "$block")
 
@@ -140,10 +142,33 @@ local ACT_ID ACT_NAME ACT_DESC ACT_ICON
             ((count >= 4)) && break
         done <<< "$quoted"
 
+        num_activities_ref=$((num_activities_ref+1))
         map_ref["$ACT_NAME"]="$ACT_ID"
         logd "Activity Name | ID: $ACT_NAME | $ACT_ID"
 
     done < <(grep -oP '\[Argument: \(ssssi\).*?\]' <<< "$ACTIVITIES_RAW")
+}
+
+#==================================================================================================
+# get_num_screens
+#
+# Return the number of screens from KDE
+#==================================================================================================
+get_num_screens()
+{
+local -n num_screens_ref=$1
+local current_user
+local BUS
+
+    logd "In get_num_screens"
+    get_activity_bus BUS
+    get_current_user current_user
+    js_script=$(<"$wdir/lib/get_num_screens.js")
+    num_screens_ref=$(sudo -u "$current_user" \
+        DISPLAY=:0 \
+        DBUS_SESSION_BUS_ADDRESS="$BUS" \
+        qdbus-qt6 org.kde.plasmashell /PlasmaShell evaluateScript \
+        "$js_script")
 }
 
 # --- This is the end, my friend ------------------------------------------------------------------

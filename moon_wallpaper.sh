@@ -36,7 +36,7 @@
 # - curl
 #==================================================================================================
 
-# for deteermining run duration
+# for determining run duration
 SECONDS=0
 
 # define working directory wdir
@@ -44,19 +44,27 @@ SECONDS=0
 readonly wdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 source "$wdir/lib/configuration.sh"
+source "$wdir/lib/configuration_wizard.sh"
+
 source "$wdir/lib/directories.sh"
-source "$wdir/lib/astronomy.sh"
-source "$wdir/lib/wallpaper.sh"
-source "$wdir/lib/read_moon_data_images.sh"
-source "$wdir/lib/image_processing.sh"
+source "$wdir/lib/logger.sh"
+
 source "$wdir/lib/kde_activity_tools.sh"
+
+source "$wdir/lib/astronomy.sh"
+source "$wdir/lib/image_processing.sh"
+source "$wdir/lib/read_moon_data_images.sh"
+source "$wdir/lib/wallpaper.sh"
 
 #evaluate command line options
 force_run_mode=false
 debug_mode=false
 verbose_mode=false
-while getopts ":dfv" opt; do
+configuration_mode=false
+while getopts ":cdfv" opt; do
     case "$opt" in
+        c)
+            configuration_mode=true ;;
         d)
             debug_mode=true ;;
         f)
@@ -70,26 +78,14 @@ while getopts ":dfv" opt; do
     esac
 done
 
-# define a small logger function to be used when verbose is true
-logv()
-{
-    if $debug_mode || $verbose_mode; then
-        echo "$@"
-    fi
-    return 0
-}
-
-# define a small logger function to be used when debug is true
-logd()
-{
-    if $debug_mode; then
-        echo "$@"
-    fi
-    return 0
-}
-
 # define all working directories
 set_directories
+
+# start configuration wizard when called with option '-c'
+if $configuration_mode; then
+    configure_application
+    exit 0
+fi
 
 # read all configuration data
 read_configuration
