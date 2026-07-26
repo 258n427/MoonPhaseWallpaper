@@ -33,6 +33,7 @@ local start end elapsed
     readonly configdir="$wdir/configuration"  # configuration directory
     mkdir -p "$configdir"
     readonly configfile="$configdir/moon_wallpaper.conf"
+    readonly configfile_default="$configdir/moon_wallpaper.conf.default"
     readonly AWK_ASTRONOMY="$wdir/lib/astronomy.awk"
 
     logd "wdir:      $wdir"

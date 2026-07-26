@@ -89,6 +89,16 @@ fi
 
 # read all configuration data
 read_configuration
+case $? in
+    1)
+        # exit application
+        fatal_configuration_error "Configuration file is missing:" "$configfile"
+        ;;
+    2)
+        # exit application
+        fatal_configuration_error "Configuration file is corrupt:" "$configfile"
+        ;;
+esac
 
 # declare all global arrays which are needed
 moonimage=()

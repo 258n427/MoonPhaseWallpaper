@@ -15,14 +15,40 @@
 #==================================================================================================
 # configure_application
 #
-# tbd
+# Run the configuration wizard to configure the application with user-specific settings.
+# Use applicable values from a previous configuration as defaults.
 #==================================================================================================
 configure_application()
 {
+    # try to read the configuration file (if it exists) so that the values from a previous
+    # configuration can be used as default values for the current configuration run.
+    # If the configuration file does not exist or cannot be read, then read_configuration
+    # automatically tries to read the default configuration file and use the values from
+    # that file as default values.
+    # We are not providing defaults for Activity or Screen as the system configuration
+    # may have changed since the previous configuration
+    # (e.g. new or less screens, activities deleted, ...).
+    wizard_config_exists=false
+    if read_configuration; then
+        wizard_config_exists=true
+    elif ! read_default_configuration; then
+        fatal_configuration_error \
+            "Configuration files are missing or corrupt:" \
+            "$configfile $configfile_default"
+    fi
+
+    wizard_default_latitude="$OBSERVER_LATITUDE"
+    wizard_default_longitude="$OBSERVER_LONGITUDE"
+    wizard_default_curr_year="$NASA_CURR_YEAR"
+    wizard_default_curr_url="$NASA_SVS_URL_CURRENT_YEAR"
+    wizard_default_prev_year="$NASA_PREV_YEAR"
+    wizard_default_prev_url="$NASA_SVS_URL_PREVIOUS_YEAR"
+
     choose_activity
     choose_screen
     enter_observer_location
     write_configuration
+
 }
 
 #==================================================================================================
@@ -161,15 +187,15 @@ local selection
 #==================================================================================================
 # enter_observer_location
 #
-#
+# Ask the user to provide latitude and longitude of the Observer location.
 #==================================================================================================
 enter_observer_location()
 {
 local lat lon extra
-readonly DEFAULT_LAT=47.996
-readonly DEFAULT_LON=7.850
+readonly DEFAULT_LAT="$wizard_default_latitude"
+readonly DEFAULT_LON="$wizard_default_longitude"
 
-    while true; do
+while true; do
         clear
         echo " "
         echo " MoonPhaseWallpaper Configuration: Observer Location"
@@ -183,7 +209,11 @@ readonly DEFAULT_LON=7.850
         echo " -------------------------------------------------------------------------------"
         echo " "
         echo " Enter Observer location (decimal degrees)"
-        echo " Default: Freiburg (Germany)"
+        if $wizard_config_exists; then
+            echo " Default: from previous configuration"
+        else
+            echo " Default: Freiburg (Germany)"
+        fi
         echo " "
         read -rp " Enter Latitude Longitude (Enter for default [$DEFAULT_LAT $DEFAULT_LON]): " lat lon extra
 
@@ -231,8 +261,8 @@ local answer
     while true; do
         clear
         echo " "
-        echo " MoonPhaseWallpaper Configuration Summary"
-        echo " ========================================"
+        echo " MoonPhaseWallpaper: Configuration Summary"
+        echo " ========================================="
         echo " "
         echo " Activity:"
         echo "     $wizard_activity_name"
@@ -263,7 +293,7 @@ local answer
     if [[ $answer == y ]]; then
         echo " "
         echo " Saving configuration..."
-#        conf_write_configuration()
+        conf_write_configuration
         echo " "
         echo " Configuration saved successfully."
         echo " "
@@ -286,7 +316,6 @@ local answer
     echo " "
     echo " -------------------------------------------------------------------------------"
     echo " "
-
 }
 
 # --- This is the end, my friend ------------------------------------------------------------------
