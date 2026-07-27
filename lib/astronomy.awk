@@ -87,6 +87,26 @@ function calc_parallactic_angle(lat,dec,H,      Hrad,decrad,latrad,qloc)
     return rad2deg(qloc)
 }
 
+###############################################################################
+# linear_interpolation
+#
+###############################################################################
+function linear_interpolation(a1,a2,i,      f,x,hh,mm)
+{
+    f = a1/(a1-a2)
+    x = (i-1)+f
+
+    hh = int(x)
+    mm = int((x-hh)*60+0.5)
+
+    if(mm==60){
+        hh++
+        mm=0
+    }
+
+    return hh*60 + mm
+}
+
 ##############################################################################
 # Mathematical helper functions
 ##############################################################################

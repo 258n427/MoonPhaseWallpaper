@@ -264,39 +264,11 @@ calc_moonrise_set()
             a2=altitude[i]
 
             if(a1<0 && a2>=0){
-
-                f=(-a1)/(a2-a1)
-
-                x=(i-1)+f
-
-                hh=int(x)
-
-                mm=int((x-hh)*60+0.5)
-
-                if(mm==60){
-                    hh++
-                    mm=0
-                }
-
-                rise_minutes = hh*60 + mm
+                rise_minutes = linear_interpolation(a1,a2,i)
             }
 
             if(a1>=0 && a2<0){
-
-                f=a1/(a1-a2)
-
-                x=(i-1)+f
-
-                hh=int(x)
-
-                mm=int((x-hh)*60+0.5)
-
-                if(mm==60){
-                    hh++
-                    mm=0
-                }
-
-                set_minutes = hh*60 + mm
+                set_minutes = linear_interpolation(a1,a2,i)
             }
         }
 
