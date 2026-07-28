@@ -198,7 +198,8 @@ local start end elapsed
             set=$(date -d "@$set_epoch" +"%H:%M")
 
             if [[ $set_minutes -eq 0 ]]; then
-                set="--")            fi
+                set="--"
+            fi
             moonset+=("$set")
 
             moonstatus+=("$status")
