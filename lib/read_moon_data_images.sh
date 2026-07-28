@@ -155,8 +155,12 @@ local start end elapsed
             utc_doy=$(date --utc -d "$i days ago" +%j)
             first_hour=$(( (10#$utc_doy - 1) * 24 ))
             daily_data=""
+            local MOON_EVENT_LOOKBACK_HOURS=3   # calculate three hours into previous day to catch events near midnight
+                                                # sufficient to detect all observed midnight crossings
 
-            for ((hour=0; hour<24; hour++)); do
+            first_hour=$((first_hour-MOON_EVENT_LOOKBACK_HOURS))
+
+            for ((hour=0; hour<24+MOON_EVENT_LOOKBACK_HOURS; hour++)); do
                 line_index=$((first_hour+hour+1))
 
                 if [[ "$selected_year" -eq "$this_year" ]]; then
@@ -169,7 +173,9 @@ local start end elapsed
                 calc_moonrise_set \
                     "$daily_data" \
                     "$selected_year" \
-                    "$(date --utc -d "$i days ago" +"%H")"
+                    "$(date --utc -d "$i days ago" +"%H")" \
+                    "$MOON_EVENT_LOOKBACK_HOURS"
+
             )
 
             IFS="|" read -r rise_minutes set_minutes status <<< "$result"
@@ -180,15 +186,23 @@ local start end elapsed
             # Format that timestamp in the local timezone
             rise=$(date -d "@$rise_epoch" +"%H:%M")
 
+            if [[ $rise_minutes -eq 0 ]]; then
+                rise="--"
+            fi
+            moonrise+=("$rise")
+
             # Convert UTC minutes since midnight to Unix timestamp
             set_epoch=$(date -u -d "$(date -u +%F) 00:00 UTC +${set_minutes} minutes" +%s)
 
             # Format that timestamp in the local timezone
             set=$(date -d "@$set_epoch" +"%H:%M")
 
-            moonrise+=("$rise")
+            if [[ $set_minutes -eq 0 ]]; then
+                set="--")            fi
             moonset+=("$set")
+
             moonstatus+=("$status")
+
             logd "--------------------------------------------"
             logd " "
             logd "Moonrise:      $rise"

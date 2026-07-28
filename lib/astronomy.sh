@@ -174,6 +174,7 @@ calc_moonrise_set()
     local data="$1"
     local year="$2"
     local current_hour="$3"
+    local negative_offset="$4"
     local latitude longitude
 
     # Get observer location as defined by configuration
@@ -184,6 +185,7 @@ calc_moonrise_set()
         -v year="$year" \
         -v lat="$latitude" \
         -v lon="$longitude" \
+        -v negative_offset="$negative_offset" \
         -v current="$current_hour" '
 
     BEGIN{
@@ -222,6 +224,8 @@ calc_moonrise_set()
         ra  = $10 + 0
         dec = $11 + 0
 
+        line_index = NR + 0
+
         ###################################################################
         # Julian Date (JD)
         ###################################################################
@@ -246,6 +250,7 @@ calc_moonrise_set()
         # Altitude
         ###################################################################
         altitude[hour] = calc_altitude(lat,dec,H)
+        altitude_index[line_index] = calc_altitude(lat,dec,H)
     }
 
     END{
@@ -258,17 +263,17 @@ calc_moonrise_set()
         else
             status="Below horizon"
 
-        for(i=1;i<24;i++){
+        for(i=2;i<24+negative_offset;i++){
 
-            a1=altitude[i-1]
-            a2=altitude[i]
+            a1=altitude_index[i-1]
+            a2=altitude_index[i]
 
             if(a1<0 && a2>=0){
-                rise_minutes = linear_interpolation(a1,a2,i)
+                rise_minutes = linear_interpolation(a1,a2,i-negative_offset-1)
             }
 
             if(a1>=0 && a2<0){
-                set_minutes = linear_interpolation(a1,a2,i)
+                set_minutes = linear_interpolation(a1,a2,i-negative_offset-1)
             }
         }
 
