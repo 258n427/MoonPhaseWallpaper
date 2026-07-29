@@ -224,17 +224,9 @@ while true; do
             break
         fi
 
-        [[ -z $extra &&
-           $lat =~ ^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$ &&
-           $lon =~ ^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$ ]] &&
-        awk -v lat="$lat" -v lon="$lon" '
-            BEGIN {
-                exit !(lat >= -90  && lat <= 90 &&
-                       lon >= -180 && lon <= 180)
-            }' &&
-        {
+        if [[ -z $extra ]] && validate_observer_location "$lat" "$lon"; then
             break
-        }
+        fi
 
         echo " Please enter latitude (-90..90) and longitude (-180..180),"
         echo " or press <Enter> to use the defaults."

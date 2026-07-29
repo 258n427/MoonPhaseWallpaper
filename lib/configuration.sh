@@ -43,6 +43,8 @@ local start end elapsed
             return 2
         fi
         CONFIGURATION_FILE_READ=true
+        validate_configuration || return 2
+
         logd "CONFIGURATION_VERSION:      $CONFIGURATION_VERSION"
         logd "ACTIVITY_NAME:              $ACTIVITY_NAME"
         logd "ACTIVITY_ID:                $ACTIVITY_ID"
@@ -62,6 +64,400 @@ local start end elapsed
     logd "Completed in ${elapsed} seconds."
     logv "================================================================================"
     logv " "
+    return 0
+}
+
+
+#==================================================================================================
+# validate_configuration
+#
+# Validate the configuration as sourced from the configuration file.
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_configuration()
+{
+    validate_configuration_version "$CONFIGURATION_VERSION" ||
+        fatal_configuration_error "Invalid CONFIGURATION_VERSION in file" "$configfile"
+    validate_activity_name         "$ACTIVITY_NAME" ||
+        fatal_configuration_error "Invalid ACTIVITY_NAME in file" "$configfile"
+    validate_activity_id           "$ACTIVITY_ID" ||
+        fatal_configuration_error "Invalid ACTIVITY_ID in file" "$configfile"
+    validate_screen                "$SCREEN" ||
+        fatal_configuration_error "Invalid SCREEN in file" "$configfile"
+    validate_latitude              "$OBSERVER_LATITUDE" ||
+        fatal_configuration_error "Invalid OBSERVER_LATITUDE in file" "$configfile"
+    validate_longitude             "$OBSERVER_LONGITUDE" ||
+        fatal_configuration_error "Invalid OBSERVER_LONGITUDE in file" "$configfile"
+    validate_nasa_configuration "$NASA_CURR_YEAR" "$NASA_SVS_URL_CURRENT_YEAR" \
+                                "$NASA_PREV_YEAR" "$NASA_SVS_URL_PREVIOUS_YEAR" ||
+        fatal_configuration_error "Invalid NASA configuration in file" "$configfile"
+
+    return 0
+}
+
+#==================================================================================================
+# validate_configuration_version
+#
+# Verify the configuration version as read from the configuration file.
+# Current configuration version: 1
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_configuration_version()
+{
+local conf_version="$1"
+
+    [[ -n $conf_version ]] || return 1
+    validate_positive_integer_incl_zero "$conf_version" || return 1
+    (( $conf_version == 1 )) || return 1
+
+    return 0
+}
+
+#==================================================================================================
+# validate_activity_name
+#
+# Verify the activity name as read from the configuration file.
+# Verify existence only as renaming an activity is perfectly fine
+# and will not affect the functionality.
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_activity_name()
+{
+local act_name="$1"
+
+    [[ -n $act_name ]] || return 1
+    return 0
+}
+
+#==================================================================================================
+# validate_activity_id
+#
+# Verify the activity id as read from the configuration file does still exist
+# and has not been deleted.
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_activity_id()
+{
+local act_id="$1"
+local num_activities
+local act_name
+declare -A activity_map
+
+    [[ -n $act_id ]] || return 1
+
+    create_activity_map activity_map num_activities
+
+    for act_name in "${!activity_map[@]}"; do
+        [[ ${activity_map[$act_name]} == "$act_id" ]] && return 0
+    done
+
+    return 1
+}
+
+#==================================================================================================
+# validate_screen
+#
+# Verify the screen with the screen ID read from the configuration file does still exist.
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_screen()
+{
+local screen="$1"
+local num_screens
+
+    [[ -n $screen ]] || return 1
+    validate_positive_integer_incl_zero "$screen" || return 1
+
+    get_num_screens num_screens
+    # Valid screen IDs are 0 .. (num_screens-1)
+    (( screen >= 0 && screen < num_screens )) || return 1
+
+    return 0
+}
+
+#==================================================================================================
+# validate_latitude
+#
+# Verify that latitude is a valid decimal coordinate and is in the range [-90..90].
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_latitude()
+{
+local lat="$1"
+
+    [[ -n $lat ]] || return 1
+    validate_decimal "$lat" || return 1
+
+    awk -v lat="$lat" '
+        BEGIN {
+            exit !(lat >= -90  && lat <= 90)
+        }'
+    return $?
+}
+
+#==================================================================================================
+# validate_longitude
+#
+# Verify that longitude is a valid decimal coordinate and is in the range [-180..180].
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_longitude()
+{
+local lon="$1"
+
+    [[ -n $lon ]] || return 1
+    validate_decimal "$lon" || return 1
+
+    awk -v lon="$lon" '
+        BEGIN {
+            exit !(lon >= -180 && lon <= 180)
+        }'
+    return $?
+}
+
+#==================================================================================================
+# validate_observer_location
+#
+# Verify that latitude and longitude are valid decimal coordinates.
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_observer_location()
+{
+local lat="$1"
+local lon="$2"
+
+    validate_latitude "$lat"  || return 1
+    validate_longitude "$lon" || return 1
+
+    return 0
+}
+
+#==================================================================================================
+# validate_nasa_configuration
+#
+# Verify that NASA configuration section as read from the configuration file.
+# Correctness of URLs cannot be verified as NASA does not follow a known logic.
+# Only plausibility checks are possible.
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_nasa_configuration()
+{
+local curr_year="$1"
+local curr_url="$2"
+local prev_year="$3"
+local prev_url="$4"
+
+    validate_nasa_year "$curr_year" || return 1
+    validate_nasa_year "$prev_year" || return 1
+    validate_nasa_url_format "$curr_url" || return 1
+    validate_nasa_url_format "$prev_url" || return 1
+    validate_nasa_configuration_years "$curr_year" "$prev_year" || return 1
+    return 0
+}
+
+#==================================================================================================
+# validate_nasa_year
+#
+# Verify that an individual NASA year as read from the configuration file exists
+# and is a positive integer.
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_nasa_year()
+{
+local year="$1"
+
+    [[ -n $year ]] || return 1
+    validate_positive_integer_incl_zero "$year" || return 1
+
+    return 0
+}
+
+#==================================================================================================
+# validate_nasa_url_format
+#
+# Verify that an individual NASA URL as read from the configuration file exists
+# and that the URL starts correctly.
+# The complete correctness of the URL cannot be verified as NASA does not follow a known logic.
+# Only a plausibility checks is possible.
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_nasa_url_format()
+{
+local url="$1"
+
+    [[ -n $url ]] || return 1
+    [[ $url =~ ^https://svs\.gsfc\.nasa\.gov/vis/ ]] || return 1
+    return 0
+}
+
+#==================================================================================================
+# validate_nasa_configuration_years
+#
+# Verify that NASA years as read from the configuration file exist and contain the expected
+# values for the current and previous year.
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_nasa_configuration_years()
+{
+local conf_curr_year="$1"
+local conf_prev_year="$2"
+local curr_year
+local prev_year
+
+    curr_year=$(date --utc +%Y)
+    prev_year=$((curr_year - 1))
+
+    [[ -n $conf_curr_year ]] || return 1
+    [[ -n $conf_prev_year ]] || return 1
+
+    if [[ $conf_curr_year != "$curr_year" ]]; then
+        nasa_configuration_error "$curr_year" "$prev_year" "$conf_curr_year" "$conf_prev_year"
+        return 1
+    fi
+    if [[ $conf_prev_year != "$prev_year" ]]; then
+        nasa_configuration_error "$curr_year" "$prev_year" "$conf_curr_year" "$conf_prev_year"
+        return 1
+    fi
+
+    return 0
+}
+
+#==================================================================================================
+# nasa_configuration_error
+#
+# Inform the user if there are inconsistencies for the years defined in the NASA section
+# of the configuration and instruct him to update the configuration.
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+nasa_configuration_error()
+{
+local curr_year="$1"
+local prev_year="$2"
+local conf_curr_year="$3"
+local conf_prev_year="$4"
+
+    echo "The NASA configuration appears to be out of date or inconsistent."
+    echo
+    echo "Expected:"
+    echo "    Current year : $curr_year"
+    echo "    Previous year: $prev_year"
+    echo
+    echo "Configured:"
+    echo "    Current year : $conf_curr_year"
+    echo "    Previous year: $conf_prev_year"
+
+    echo "Please update the section containing NASA data in:"
+    echo "    $configfile"
+}
+
+#==================================================================================================
+# validate_decimal
+#
+# Verify that passed argument is a valid decimal number.
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_decimal()
+{
+local value="$1"
+
+    [[ -n $value ]] || return 1
+    [[ $value =~ ^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$ ]] || return 1
+    return 0
+}
+
+#==================================================================================================
+# validate_integer
+#
+# Verify that passed argument is a valid integer number.
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_integer()
+{
+local value="$1"
+
+    [[ -n $value ]] || return 1
+    [[ $value =~ ^[+-]?[0-9]+$ ]] || return 1
+    return 0
+}
+
+#==================================================================================================
+# validate_positive_integer_incl_zero
+#
+# Verify that passed argument is a valid positive integer number (including 0).
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_positive_integer_incl_zero()
+{
+local value="$1"
+
+    [[ -n $value ]] || return 1
+    [[ $value =~ ^[0-9]+$ ]] || return 1
+    return 0
+}
+
+#==================================================================================================
+# validate_positive_integer
+#
+# Verify that passed argument is a valid positive integer number (excluding 0).
+#
+# Return values:
+#       0 => valid
+#       1 => invalid
+#==================================================================================================
+validate_positive_integer()
+{
+local value="$1"
+
+    [[ -n $value ]] || return 1
+    [[ $value =~ ^[1-9][0-9]*$ ]] || return 1
     return 0
 }
 
