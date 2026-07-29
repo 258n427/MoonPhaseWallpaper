@@ -1,0 +1,7 @@
+[Unit]
+Description=Run MoonPhaseWallpaper to update desktop background image
+
+[Service]
+Type=oneshot
+# @INSTALL_DIR@ is replaced by the installation directory during installation.
+ExecStart=@INSTALL_DIR@/moon_wallpaper.sh
