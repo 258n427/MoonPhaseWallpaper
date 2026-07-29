@@ -47,7 +47,7 @@ configure_application()
     choose_activity
     choose_screen
     enter_observer_location
-    write_configuration
+    configuration_summary
 
 }
 
@@ -195,7 +195,7 @@ local lat lon extra
 readonly DEFAULT_LAT="$wizard_default_latitude"
 readonly DEFAULT_LON="$wizard_default_longitude"
 
-while true; do
+    while true; do
         clear
         echo " "
         echo " MoonPhaseWallpaper Configuration: Observer Location"
@@ -241,12 +241,12 @@ while true; do
 }
 
 #==================================================================================================
-# write_configuration
+# configuration_summary
 #
 # Shows a configuration summary (all selected values) and ask the user whether to write the
 # configuration
 #==================================================================================================
-write_configuration()
+configuration_summary()
 {
 local answer
 
@@ -297,7 +297,7 @@ local answer
         echo " These URLs must be updated once per year at the beginning of the year."
         echo " Instructions are included in the configuration file."
     else
-        echo " Configuration cancelled."
+        echo " Configuration was not saved."
         echo " "
         echo " -------------------------------------------------------------------------------"
     fi

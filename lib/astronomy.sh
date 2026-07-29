@@ -14,7 +14,7 @@
 #==================================================================================================
 # calc_moon_rotation
 #
-# Calculates the apparent orientation of the Moon for an observer in Gundelfingen.
+# Calculate the apparent orientation of the Moon for the configured observer location.
 #
 # Input:
 #   $1  datestamp
@@ -35,11 +35,11 @@ calc_moon_rotation()
     local axis="$5"
     local latitude longitude
 
-    # Get observer location as defined by configuration
+    # Get observer location as defined by configuration.
     conf_get_observer_data latitude longitude
 
     #######################################################################
-    # Extract year, month, day and hour from the strings
+    # Extract year, month, day and hour from the strings.
     #######################################################################
 
     local day="${datestamp:0:2}"
@@ -47,6 +47,7 @@ calc_moon_rotation()
     local year="${datestamp:7:4}"
 
     local hour="${timestamp:0:2}"
+    local month
 
     case "$mon" in
         Jan) month=1 ;;
@@ -164,20 +165,18 @@ calc_moon_rotation()
 #
 # NOTE:
 # This function evaluates the 24 UTC hours of the requested day.
-# In rare cases (typically when a moonrise or moonset occurs shortly after
-# midnight UTC), an event may belong to the adjacent UTC day and therefore
-# not be detected. Extending the evaluation window to 26 hours
-# (23:00 previous day through 00:00 next day) would eliminate this edge case.
+# Moonrise and moonset events occurring shortly after midnight UTC are detected
+# by extending the calculation window into the previous day.
 #==================================================================================================
 calc_moonrise_set()
 {
     local data="$1"
     local year="$2"
     local current_hour="$3"
-    local negative_offset="$4"
+    local lookback_hours="$4"
     local latitude longitude
 
-    # Get observer location as defined by configuration
+    # Get observer location as defined by configuration.
     conf_get_observer_data latitude longitude
 
     awk \
@@ -185,7 +184,7 @@ calc_moonrise_set()
         -v year="$year" \
         -v lat="$latitude" \
         -v lon="$longitude" \
-        -v negative_offset="$negative_offset" \
+        -v lookback_hours="$lookback_hours" \
         -v current="$current_hour" '
 
     BEGIN{
@@ -263,17 +262,17 @@ calc_moonrise_set()
         else
             status="Below horizon"
 
-        for(i=2;i<24+negative_offset;i++){
+        for(i=2;i<24+lookback_hours;i++){
 
             a1=altitude_index[i-1]
             a2=altitude_index[i]
 
             if(a1<0 && a2>=0){
-                rise_minutes = linear_interpolation(a1,a2,i-negative_offset-1)
+                rise_minutes = linear_interpolation(a1,a2,i-lookback_hours-1)
             }
 
             if(a1>=0 && a2<0){
-                set_minutes = linear_interpolation(a1,a2,i-negative_offset-1)
+                set_minutes = linear_interpolation(a1,a2,i-lookback_hours-1)
             }
         }
 

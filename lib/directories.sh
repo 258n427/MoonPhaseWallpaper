@@ -14,9 +14,7 @@
 #==================================================================================================
 # set_directories
 #
-# Define configuration:
-# - all required/used directories
-# - observer coordinates
+# Initialize all application directories and file paths.
 #==================================================================================================
 set_directories()
 {
@@ -24,23 +22,29 @@ local start end elapsed
 
     start=$(date +%s.%N)
     logv "In set_directories"
-    # define directories
-    readonly imdir="$wdir/images" # image directory
+    # Define application directories
+    readonly imdir="$wdir/images"               # image directory
     mkdir -p "$imdir"
-    readonly ddir="$wdir/data" # data directory
+    readonly ddir="$wdir/data"                  # data directory
     mkdir -p "$ddir"
     readonly logfile="$ddir/last_run.log"
-    readonly configdir="$wdir/configuration"  # configuration directory
+
+    readonly configdir="$wdir/configuration"    # configuration directory
     mkdir -p "$configdir"
     readonly configfile="$configdir/moon_wallpaper.conf"
     readonly configfile_default="$configdir/moon_wallpaper.conf.default"
+
     readonly AWK_ASTRONOMY="$wdir/lib/astronomy.awk"
 
     logd "wdir:      $wdir"
     logd "imdir:     $imdir"
     logd "ddir:      $ddir"
-    logd "configdir: $configdir"
-    logd "AWKlib:    $AWK_ASTRONOMY"
+    logd "logfile:          $logfile"
+    logd "configdir:        $configdir"
+    logd "configfile:       $configfile"
+    logd "default config:   $configfile_default"
+    logd "AWKlib:           $AWK_ASTRONOMY"
+
     end=$(date +%s.%N)
     elapsed=$(awk "BEGIN { printf \"%.2f\", $end - $start }")
     logd "Completed in ${elapsed} seconds."

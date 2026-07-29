@@ -5,7 +5,7 @@
 #------------------------------------------------------------------------------
 #  File:        logger.sh
 #  Author:      Uli Treuer
-#  Purpose:     Defines functions for logging output (currently only on screen)
+#  Purpose:     Provides logging functions for screen output.
 #
 #  Copyright (c) 2026 Uli Treuer
 #  License:     (to be added)
@@ -14,7 +14,7 @@
 #==================================================================================================
 # logv
 #
-# log function to log output on screen when debug mode or verbose mode is active
+# Logs a message when verbose or debug mode is enabled.
 #==================================================================================================
 logv()
 {
@@ -27,7 +27,7 @@ logv()
 #==================================================================================================
 # logd
 #
-# log function to log debug output on screen when debug mode is active
+# Logs a message when debug mode is enabled.
 #==================================================================================================
 logd()
 {

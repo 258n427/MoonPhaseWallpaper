@@ -4,7 +4,7 @@
 #  File:        astronomy.awk
 #  Author:      Uli Treuer
 #  Purpose:     Provides common astronomical AWK functions used by multiple
-#               bash functions.
+#               Bash functions.
 #
 #  Copyright (c) 2026 Uli Treuer
 #  License:     (to be added)
@@ -89,7 +89,8 @@ function calc_parallactic_angle(lat,dec,H,      Hrad,decrad,latrad,qloc)
 
 ###############################################################################
 # linear_interpolation
-#
+# Determine the minute at which the Moon crosses the horizon
+# by linearly interpolating between two consecutive altitude values.
 ###############################################################################
 function linear_interpolation(a1,a2,i,      f,x,hh,mm)
 {
@@ -107,9 +108,9 @@ function linear_interpolation(a1,a2,i,      f,x,hh,mm)
     return hh*60 + mm
 }
 
-##############################################################################
+###############################################################################
 # Mathematical helper functions
-##############################################################################
+###############################################################################
 
 function deg2rad(x)
 {
@@ -121,9 +122,9 @@ function rad2deg(x)
     return x * 180.0 / pi
 }
 
-##############################################################################
+###############################################################################
 # Angle normalization
-##############################################################################
+###############################################################################
 
 function normalize360(angle)
 {

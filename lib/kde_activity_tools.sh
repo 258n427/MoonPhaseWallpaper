@@ -5,8 +5,7 @@
 #------------------------------------------------------------------------------
 #  File:        kde_activity_tools.sh
 #  Author:      Uli Treuer
-#  Purpose:     Provides tools for managing KDE Activities
-#               for MoonPhaseWallpaper.
+#  Purpose:     Provides helper functions for managing KDE Activities.
 #
 #  Copyright (c) 2026 Uli Treuer
 #  License:     (to be added)
@@ -59,9 +58,10 @@ local -A activity_map
 
     logd "In activity_id_from_name"
     create_activity_map activity_map
+
     # Get ID of requested activity from activity_map
     activity_id_ref="${activity_map["$activity_name"]}"
-    if [ -z "$activity_id_ref" ]; then
+    if [[ -z $activity_id_ref ]]; then
         logv "Error: Activity '$activity_name' not found. Exiting script now."
         exit 1
     fi
@@ -85,7 +85,7 @@ local current_user
 #==================================================================================================
 # get_current_user
 #
-# return the user name of the current user.
+# Return the login name of the current user.
 #==================================================================================================
 get_current_user()
 {
@@ -104,7 +104,6 @@ create_activity_map()
 local -n map_ref=$1
 local -n num_activities_ref=$2
 
-local current_user
 local BUS
 local ACTIVITIES_RAW
 local quoted
@@ -151,21 +150,25 @@ local ACT_ID ACT_NAME ACT_DESC ACT_ICON
 #==================================================================================================
 # get_num_screens
 #
-# Return the number of screens from KDE
+# Return the number of connected screens reported by KDE.
 #==================================================================================================
 get_num_screens()
 {
-local -n num_screens_ref=$1
-local BUS
+    local -n num_screens_ref=$1
+    local BUS
+    local js_script
 
     logd "In get_num_screens"
+
     get_activity_bus BUS
     js_script=$(<"$wdir/lib/get_num_screens.js")
+
     num_screens_ref=$(
         DISPLAY=:0 \
         DBUS_SESSION_BUS_ADDRESS="$BUS" \
         qdbus-qt6 org.kde.plasmashell /PlasmaShell evaluateScript \
-        "$js_script")
+        "$js_script"
+    ) || return 1
 }
 
 # --- This is the end, my friend ------------------------------------------------------------------

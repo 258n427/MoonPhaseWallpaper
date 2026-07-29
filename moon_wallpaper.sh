@@ -39,7 +39,7 @@
 # for determining run duration
 SECONDS=0
 
-# define working directory wdir
+# Determine the directory containing this script.
 # (directory in which the script is located - no matter what it is called)
 readonly wdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
@@ -56,7 +56,7 @@ source "$wdir/lib/image_processing.sh"
 source "$wdir/lib/read_moon_data_images.sh"
 source "$wdir/lib/wallpaper.sh"
 
-#evaluate command line options
+# Evaluate command line options
 force_run_mode=false
 debug_mode=false
 verbose_mode=false
@@ -73,21 +73,23 @@ while getopts ":cdfv" opt; do
             verbose_mode=true ;;
         \?)
             echo "Unknown option: -$OPTARG"
+            echo "Usage:"
+            echo "    moon_wallpaper.sh [-c] [-d] [-f] [-v]"
             exit 1
             ;;
     esac
 done
 
-# define all working directories
+# Define all working directories
 set_directories
 
-# start configuration wizard when called with option '-c'
+# Start configuration wizard when called with option '-c'
 if $configuration_mode; then
     configure_application
     exit 0
 fi
 
-# read all configuration data
+# Read all configuration data
 read_configuration
 case $? in
     1)
@@ -100,24 +102,24 @@ case $? in
         ;;
 esac
 
-# declare all global arrays which are needed
-moonimage=()
-moonimage_URL=()
-datestamp=()
-timestamp=()
-phase=()
-distance=()
-cycle=()
-ra=()
-dec=()
-axisA=()
-moonrise=()
-moonset=()
-moonstatus=()
+# Declare all global arrays which are needed
+declare -a moonimage
+declare -a moonimage_URL
+declare -a datestamp
+declare -a timestamp
+declare -a phase
+declare -a distance
+declare -a cycle
+declare -a ra
+declare -a dec
+declare -a axisA
+declare -a moonrise
+declare -a moonset
+declare -a moonstatus
 
 #--------------------------------------------------------------------------------------------------
 # Check whether a new run is actually needed. Script needs to run only once per hour
-logtimestamp="$(date "+%d-%b-%Y") $(date "+%H:00")"
+readonly logtimestamp="$(date "+%d-%b-%Y") $(date "+%H:00")"
 if ! $force_run_mode; then
     # If logfile exists, compare
     if [[ -f "$logfile" ]]; then
@@ -139,13 +141,13 @@ clear_image_dir
 # in the file lib/config.sh
 define_moonimage_URLs
 
-# download the text file for phase/illumination from the NASA web page
+# Download the text file for phase/illumination from the NASA web page
 read_moon_info
 
-# determine metadata for all days
+# Determine metadata for all days
 calculate_moon_metadata
 
-# download all moon image as defined before from the NASA web page in parallel
+# Download all moon image as defined before from the NASA web page in parallel
 download_moon_images
 
 # Create the final image (one big image for current date and time) and 6 small inserts on the final
@@ -157,7 +159,7 @@ image_processing
 set_wallpaper
 
 #--------------------------------------------------------------------------------------------------
-# once completed, overwrite logfile
+# Once completed, overwrite logfile
 echo "$logtimestamp" > "$logfile"
 logv "New timestamp recorded."
 logv "Moon Wallpaper successfully updated."

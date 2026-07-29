@@ -5,8 +5,7 @@
 #------------------------------------------------------------------------------
 #  File:        wallpaper.sh
 #  Author:      Uli Treuer
-#  Purpose:     Installs the generated image as a wallpaper on a KDE desktop
-#               for MoonPhaseWallpaper.
+#  Purpose:     Updates the KDE wallpaper using the generated image.
 #
 #  Copyright (c) 2026 Uli Treuer
 #  License:     (to be added)
@@ -15,10 +14,10 @@
 #==================================================================================================
 # set_wallpaper
 #
-# Set the generated image as the new wallpaper Activity and Screen specified during configuration.
+# Set the generated image as the wallpaper for the configured Activity and Screen
 # using Plasma 6 functionality.
 # Comments and considerations:
-#       - updating the wallpaper only works for the currently active Activity. Therefore we need to
+#       - Updating the wallpaper only works for the currently active Activity. Therefore we need to
 #         switch to the target Activity before updating the wallpaper and then back to the
 #         original Activity. To be able to do that we need to determine the currently active
 #         Activity, remember it, switch to the target Activity, change the wallpaper, and change
@@ -39,16 +38,16 @@ local start end elapsed
     start=$(date +%s.%N)
     logv "In set_wallpaper"
 
-    # get the configured target activity and screen
+    # Get the configured target activity and screen
     conf_get_target_activity target_activity_id target_screen
 
-    # remember current activity
+    # Remember the currently active Activity
     get_current_activity_id current_activity_id
 
-    # switch to the configured target activity
+    # Switch to the configured target activity
     switch_to_activity "$target_activity_id"
 
-    # # Set wallpaper on the configured Activity and screen.
+    # Set wallpaper on the configured Activity and screen
     black_image="$wdir/images/black-image.png"
     wallpaper_image="$wdir/images/moon_wallpaper.png"
 
@@ -63,7 +62,7 @@ local start end elapsed
         qdbus-qt6 org.kde.plasmashell /PlasmaShell evaluateScript \
         "$js_script"
 
-    # switch back to previous Activity
+    # Restore the previously active Activity
     switch_to_activity "$current_activity_id"
 
     logv "Wallpaper replaced."

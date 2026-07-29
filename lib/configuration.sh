@@ -11,15 +11,14 @@
 #  License:     (to be added)
 #==============================================================================
 
-# set initially to false to indicate that the configuration file
-# has not been read yet
+# Indicate whether the configuration files have already been read.
 CONFIGURATION_FILE_READ=false
 CONFIGURATION_FILE_DEFAULT_READ=false
 
 #==================================================================================================
 # read_configuration
 #
-# Read the configuration file to define all user-defined data
+# Load the configuration containing all user-defined data
 # - Target activity and screen for generated wallpaper
 # - observer coordinates
 # - specification for NASA data from NASA website
@@ -33,7 +32,7 @@ read_configuration()
 local start end elapsed
 
     if $CONFIGURATION_FILE_READ; then
-        return 0 # configuration file was read before already - no need to read it again
+        return 0 # configuration file was loaded before already - no need to reload it
     fi
     start=$(date +%s.%N)
     logv "In read_configuration"
@@ -91,8 +90,11 @@ validate_configuration()
         fatal_configuration_error "Invalid OBSERVER_LATITUDE in file" "$configfile"
     validate_longitude             "$OBSERVER_LONGITUDE" ||
         fatal_configuration_error "Invalid OBSERVER_LONGITUDE in file" "$configfile"
-    validate_nasa_configuration "$NASA_CURR_YEAR" "$NASA_SVS_URL_CURRENT_YEAR" \
-                                "$NASA_PREV_YEAR" "$NASA_SVS_URL_PREVIOUS_YEAR" ||
+    validate_nasa_configuration \
+        "$NASA_CURR_YEAR" \
+        "$NASA_SVS_URL_CURRENT_YEAR" \
+        "$NASA_PREV_YEAR" \
+        "$NASA_SVS_URL_PREVIOUS_YEAR" ||
         fatal_configuration_error "Invalid NASA configuration in file" "$configfile"
 
     return 0
@@ -123,7 +125,7 @@ local conf_version="$1"
 # validate_activity_name
 #
 # Verify the activity name as read from the configuration file.
-# Verify existence only as renaming an activity is perfectly fine
+# Verify non-empty only as renaming an activity is perfectly fine
 # and will not affect the functionality.
 #
 # Return values:
@@ -182,8 +184,7 @@ local num_screens
 
     [[ -n $screen ]] || return 1
     validate_positive_integer_incl_zero "$screen" || return 1
-
-    get_num_screens num_screens
+    get_num_screens num_screens || return 1
     # Valid screen IDs are 0 .. (num_screens-1)
     (( screen >= 0 && screen < num_screens )) || return 1
 
@@ -259,7 +260,7 @@ local lon="$2"
 #==================================================================================================
 # validate_nasa_configuration
 #
-# Verify that NASA configuration section as read from the configuration file.
+# Verify that NASA configuration section as loaded from the configuration file.
 # Correctness of URLs cannot be verified as NASA does not follow a known logic.
 # Only plausibility checks are possible.
 #
@@ -285,7 +286,7 @@ local prev_url="$4"
 #==================================================================================================
 # validate_nasa_year
 #
-# Verify that an individual NASA year as read from the configuration file exists
+# Verify that an individual NASA year as loaded from the configuration file exists
 # and is a positive integer.
 #
 # Return values:
@@ -305,10 +306,10 @@ local year="$1"
 #==================================================================================================
 # validate_nasa_url_format
 #
-# Verify that an individual NASA URL as read from the configuration file exists
+# Verify that an individual NASA URL as loaded from the configuration file exists
 # and that the URL starts correctly.
 # The complete correctness of the URL cannot be verified as NASA does not follow a known logic.
-# Only a plausibility checks is possible.
+# Only a plausibility check is possible.
 #
 # Return values:
 #       0 => valid
@@ -326,7 +327,7 @@ local url="$1"
 #==================================================================================================
 # validate_nasa_configuration_years
 #
-# Verify that NASA years as read from the configuration file exist and contain the expected
+# Verify that NASA years as loaded from the configuration file exist and contain the expected
 # values for the current and previous year.
 #
 # Return values:
@@ -385,7 +386,7 @@ local conf_prev_year="$4"
     echo "    Current year : $conf_curr_year"
     echo "    Previous year: $conf_prev_year"
 
-    echo "Please update the section containing NASA data in:"
+    echo "Please update the NASA configuration section in:"
     echo "    $configfile"
 }
 
@@ -464,7 +465,7 @@ local value="$1"
 #==================================================================================================
 # read_default_configuration
 #
-# Read the default configuration file as a fallback for the user-specific configuration file.
+# Load the default configuration file as a fallback for the user-specific configuration file.
 # Return values:
 #       0 => default configuration successfully loaded
 #       1 => default file missing
@@ -475,7 +476,7 @@ read_default_configuration()
 local start end elapsed
 
     if $CONFIGURATION_FILE_DEFAULT_READ; then
-        return 0 # default configuration file was read before already - no need to read it again
+        return 0 # default configuration file was loaded before already - no need to reload it
     fi
     start=$(date +%s.%N)
     logv "In read_default_configuration"
@@ -510,7 +511,7 @@ local start end elapsed
 #==================================================================================================
 # conf_get_target_activity
 #
-# Returns by reference the target activity ID and target screen as read from configuration file
+# Returns by reference the target activity ID and target screen as loaded from configuration file
 #==================================================================================================
 conf_get_target_activity()
 {
@@ -525,7 +526,7 @@ local -n screen_ref=$2
 #==================================================================================================
 # conf_get_observer_data
 #
-# Returns by reference the observer latitude and longitude as read from configuration file
+# Returns by reference the observer latitude and longitude as loaded from configuration file
 #==================================================================================================
 conf_get_observer_data()
 {
@@ -540,7 +541,7 @@ local -n longitude_ref=$2
 #==================================================================================================
 # conf_get_nasa_url_data
 #
-# Returns by reference the NASA URL-related data as read from configuration file
+# Returns by reference the NASA URL-related data as loaded from configuration file
 #==================================================================================================
 conf_get_nasa_url_data()
 {
@@ -668,7 +669,7 @@ local start end elapsed
 fatal_configuration_error()
 {
     echo
-    echo "Fatal configuration error. $1"
+    echo "Fatal configuration error: $1"
     echo "    $2"
     echo "Exiting."
     exit 1

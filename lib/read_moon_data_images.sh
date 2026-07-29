@@ -15,7 +15,7 @@
 #==================================================================================================
 # read_moon_info
 #
-# download the text file for phase/illumination from the NASA web page
+# Download the NASA moon information files for the current and previous year.
 #==================================================================================================
 read_moon_info()
 {
@@ -42,7 +42,6 @@ local start end elapsed
         mooninfo_URL="$url_for_prev_year/$mooninfo_name_prev_year"
         curl -L -o "$mooninfo_prev_year" "$mooninfo_URL" 2> /dev/null
     fi
-    wait # wait until download has been completed
 
     # load the files
     mapfile -t moondata_this_year < "$mooninfo_this_year"
@@ -58,7 +57,7 @@ local start end elapsed
 #==================================================================================================
 # calculate_moon_metadata
 #
-# determine metadata for all days
+# Calculate metadata for the next seven wallpaper images.
 #==================================================================================================
 calculate_moon_metadata()
 {
@@ -73,6 +72,9 @@ local tmp
 local utc_doy utc_hour
 local first_hour
 local start end elapsed
+local MOON_EVENT_LOOKBACK_HOURS=3   # calculate three hours into previous day to catch events near midnight
+                                    # sufficient to detect all observed midnight crossings
+readonly MOON_EVENT_LOOKBACK_HOURS
 
     start=$(date +%s.%N)
     logv "In calculate_moon_metadata"
@@ -155,8 +157,6 @@ local start end elapsed
             utc_doy=$(date --utc -d "$i days ago" +%j)
             first_hour=$(( (10#$utc_doy - 1) * 24 ))
             daily_data=""
-            local MOON_EVENT_LOOKBACK_HOURS=3   # calculate three hours into previous day to catch events near midnight
-                                                # sufficient to detect all observed midnight crossings
 
             first_hour=$((first_hour-MOON_EVENT_LOOKBACK_HOURS))
 

@@ -14,9 +14,8 @@
 #==================================================================================================
 # image_processing
 #
-# Create the final image (index 0 = one big image for current date and time) and 6 small inserts
-# on the final image showing the moon image for the 6 days before today (making it the complete
-# last week)
+# Create the final wallpaper image by combining today's large moon image with six smaller images
+# from the preceding days.
 #==================================================================================================
 image_processing()
 {
@@ -34,9 +33,7 @@ local text5
 local text6
 local text7
 local text8
-local start
-local end
-local elapsed
+local start end elapsed
 
     start=$(date +%s.%N)
     logv "In image_processing"
@@ -47,19 +44,19 @@ local elapsed
 
     y_pos=1075
     for (( i=0; i<7; i++ )); do
-        if (( i == 0 )); then
-            rotation=$(calc_moon_rotation \
-                "${datestamp[i]}" \
-                "${timestamp[i]}" \
-                "${ra[i]}" \
-                "${dec[i]}" \
-                "${axisA[i]}")
+        rotation=$(calc_moon_rotation \
+            "${datestamp[i]}" \
+            "${timestamp[i]}" \
+            "${ra[i]}" \
+            "${dec[i]}" \
+            "${axisA[i]}")
 
+        if (( i == 0 )); then
             new_x=1920
             new_y=1080
             new_pos="+0+0"
 
-            # build the strings for the image caption
+            # Build the caption strings.
             text1="Date:                ${datestamp[0]}"
             text2="Status Time:         ${timestamp[0]}"
             text3="Moonrise:            ${moonrise[0]}"
@@ -69,13 +66,6 @@ local elapsed
             text7="Days into Cycle:     ${cycle[0]}"
             text8="Distance from Earth: ${distance[0]} km"
         else
-            rotation=$(calc_moon_rotation \
-                "${datestamp[i]}" \
-                "${timestamp[i]}" \
-                "${ra[i]}" \
-                "${dec[i]}" \
-                "${axisA[i]}")
-
             new_x=267
             new_y=150
             new_pos="+30+0"
@@ -176,13 +166,13 @@ local elapsed
                 -composite \
                 final.tif
         fi
-        # removing the downloaded moon image as not to use up storage
+        # Remove the downloaded image to free disk space.
         rm -f "${moonimage[i]}"
     done
 
-    # convert final image to .png (as the file size will be much smaller) => back.png
+    # Convert the final image to PNG to reduce file size.
     magick final.tif moon_wallpaper.png
-    # remove last temporary file
+    # Remove last temporary file
     rm -f final.tif
     end=$(date +%s.%N)
     elapsed=$(awk "BEGIN { printf \"%.2f\", $end - $start }")
@@ -198,9 +188,7 @@ local elapsed
 #==================================================================================================
 clear_image_dir()
 {
-local start
-local end
-local elapsed
+local start end elapsed
 
     start=$(date +%s.%N)
     logv "In clear_image_dir"
