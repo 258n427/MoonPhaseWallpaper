@@ -83,10 +83,30 @@ done
 # Define all working directories
 set_directories
 
+# Wait for KDE Plasma to finish initialization after login.
+if ! wait_for_plasma_ready; then
+    logv "Plasma did not become ready within 20 seconds."
+    exit 0
+fi
+
 # Start configuration wizard when called with option '-c'
 if $configuration_mode; then
     configure_application
     exit 0
+fi
+
+#--------------------------------------------------------------------------------------------------
+# Check whether a new run is actually needed. Script needs to run only once per hour
+readonly logtimestamp="$(date "+%d-%b-%Y") $(date "+%H:00")"
+if ! $force_run_mode; then
+    # If logfile exists, compare
+    if [[ -f "$logfile" ]]; then
+        read -r previous < "$logfile"
+        if [[ "$logtimestamp" == "$previous" ]]; then
+            logv "Same timestamp as last run. Exiting script."
+            exit 0
+        fi
+    fi
 fi
 
 # Read all configuration data
@@ -116,21 +136,6 @@ declare -a axisA
 declare -a moonrise
 declare -a moonset
 declare -a moonstatus
-
-#--------------------------------------------------------------------------------------------------
-# Check whether a new run is actually needed. Script needs to run only once per hour
-readonly logtimestamp="$(date "+%d-%b-%Y") $(date "+%H:00")"
-if ! $force_run_mode; then
-    # If logfile exists, compare
-    if [[ -f "$logfile" ]]; then
-        read -r previous < "$logfile"
-        if [[ "$logtimestamp" == "$previous" ]]; then
-            logv "Same timestamp as last run. Exiting script."
-            exit 0
-        fi
-    fi
-fi
-
 
 # Cleanup (just in case the previous run was interrupted and there are leftovers)
 clear_image_dir
