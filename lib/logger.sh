@@ -8,7 +8,7 @@
 #  Purpose:     Provides logging functions for screen output.
 #
 #  Copyright (c) 2026 Uli Treuer
-#  License:     (to be added)
+#  License: MIT
 #==============================================================================
 
 #==================================================================================================

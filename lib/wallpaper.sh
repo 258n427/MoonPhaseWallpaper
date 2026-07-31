@@ -8,7 +8,7 @@
 #  Purpose:     Updates the KDE wallpaper using the generated image.
 #
 #  Copyright (c) 2026 Uli Treuer
-#  License:     (to be added)
+#  License: MIT
 #==============================================================================
 
 #==================================================================================================

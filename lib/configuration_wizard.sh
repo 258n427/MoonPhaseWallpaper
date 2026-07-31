@@ -8,7 +8,7 @@
 #  Purpose:     Manages the configuration dialog with the user.
 #
 #  Copyright (c) 2026 Uli Treuer
-#  License:     (to be added)
+#  License: MIT
 #==============================================================================
 
 

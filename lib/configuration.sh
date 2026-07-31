@@ -8,7 +8,7 @@
 #  Purpose:     Manages configuration information for MoonPhaseWallpaper.
 #
 #  Copyright (c) 2026 Uli Treuer
-#  License:     (to be added)
+#  License: MIT
 #==============================================================================
 
 # Indicate whether the configuration files have already been read.

@@ -8,7 +8,7 @@
 #  Purpose:     Provides helper functions for managing KDE Activities.
 #
 #  Copyright (c) 2026 Uli Treuer
-#  License:     (to be added)
+#  License: MIT
 #==============================================================================
 
 #==================================================================================================
