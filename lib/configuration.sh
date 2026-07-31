@@ -84,7 +84,7 @@ validate_configuration()
         fatal_configuration_error "Invalid ACTIVITY_NAME in file" "$configfile"
     validate_activity_id           "$ACTIVITY_ID" ||
         fatal_configuration_error "Invalid ACTIVITY_ID in file" "$configfile"
-    validate_screen                "$SCREEN" ||
+    validate_screen_setting       "$SCREEN" ||
         fatal_configuration_error "Invalid SCREEN in file" "$configfile"
     validate_latitude              "$OBSERVER_LATITUDE" ||
         fatal_configuration_error "Invalid OBSERVER_LATITUDE in file" "$configfile"
@@ -169,24 +169,20 @@ declare -A activity_map
 }
 
 #==================================================================================================
-# validate_screen
+# validate_screen_setting
 #
-# Verify the screen with the screen ID read from the configuration file does still exist.
+# Verify that the configured screen setting is syntactically valid.
 #
 # Return values:
 #       0 => valid
 #       1 => invalid
 #==================================================================================================
-validate_screen()
+validate_screen_setting()
 {
 local screen="$1"
-local num_screens
 
     [[ -n $screen ]] || return 1
     validate_positive_integer_incl_zero "$screen" || return 1
-    get_num_screens num_screens || return 1
-    # Valid screen IDs are 0 .. (num_screens-1)
-    (( screen >= 0 && screen < num_screens )) || return 1
 
     return 0
 }
