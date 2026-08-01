@@ -78,24 +78,38 @@ local start end elapsed
 #==================================================================================================
 validate_configuration()
 {
-    validate_configuration_version "$CONFIGURATION_VERSION" ||
-        fatal_configuration_error "Invalid CONFIGURATION_VERSION in file" "$configfile"
-    validate_activity_name         "$ACTIVITY_NAME" ||
-        fatal_configuration_error "Invalid ACTIVITY_NAME in file" "$configfile"
-    validate_activity_id           "$ACTIVITY_ID" ||
-        fatal_configuration_error "Invalid ACTIVITY_ID in file" "$configfile"
-    validate_screen_setting       "$SCREEN" ||
-        fatal_configuration_error "Invalid SCREEN in file" "$configfile"
-    validate_latitude              "$OBSERVER_LATITUDE" ||
-        fatal_configuration_error "Invalid OBSERVER_LATITUDE in file" "$configfile"
-    validate_longitude             "$OBSERVER_LONGITUDE" ||
-        fatal_configuration_error "Invalid OBSERVER_LONGITUDE in file" "$configfile"
+    validate_configuration_version "$CONFIGURATION_VERSION" || {
+        configuration_error "Invalid CONFIGURATION_VERSION in file" "$configfile"
+        return 2
+    }
+    validate_activity_name         "$ACTIVITY_NAME" || {
+        configuration_error "Invalid ACTIVITY_NAME in file" "$configfile"
+        return 2
+    }
+    validate_activity_id "$ACTIVITY_ID" || {
+        configuration_error "Invalid ACTIVITY_ID in file" "$configfile"
+        return 2
+    }
+    validate_screen_setting       "$SCREEN" || {
+        configuration_error "Invalid SCREEN in file" "$configfile"
+        return 2
+    }
+    validate_latitude              "$OBSERVER_LATITUDE" || {
+        configuration_error "Invalid OBSERVER_LATITUDE in file" "$configfile"
+        return 2
+    }
+    validate_longitude             "$OBSERVER_LONGITUDE" || {
+        configuration_error "Invalid OBSERVER_LONGITUDE in file" "$configfile"
+        return 2
+    }
     validate_nasa_configuration \
         "$NASA_CURR_YEAR" \
         "$NASA_SVS_URL_CURRENT_YEAR" \
         "$NASA_PREV_YEAR" \
-        "$NASA_SVS_URL_PREVIOUS_YEAR" ||
-        fatal_configuration_error "Invalid NASA configuration in file" "$configfile"
+        "$NASA_SVS_URL_PREVIOUS_YEAR" || {
+        configuration_error "Invalid NASA configuration in file" "$configfile"
+        return 2
+    }
 
     return 0
 }
@@ -670,4 +684,21 @@ fatal_configuration_error()
     echo "Exiting."
     exit 1
 }
+
+#==================================================================================================
+# configuration_error
+#
+# Report a configuration error without terminating the application.
+#
+# Return values:
+#       2 => configuration invalid
+#==================================================================================================
+configuration_error()
+{
+    echo
+    echo "Configuration error: $1"
+    echo "    $2"
+    return 2
+}
+
 # --- This is the end, my friend ------------------------------------------------------------------
