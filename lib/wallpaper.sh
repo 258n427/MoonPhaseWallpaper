@@ -48,7 +48,7 @@ local start end elapsed
     switch_to_activity "$target_activity_id"
 
     # Set wallpaper on the configured Activity and screen
-    black_image="$wdir/images/black-image.png"
+    black_image="$wdir/images/black_image.png"
     wallpaper_image="$wdir/images/moon_wallpaper.png"
 
     js_script=$(<"$wdir/lib/set_wallpaper.js")
