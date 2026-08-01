@@ -27,60 +27,54 @@ sudo dnf install \
     qt6-qttools
 ```
 
-## 3. Choose an installation directory
+## 3. Choose and create an installation directory
 
 MoonPhaseWallpaper can be installed into any directory within your home directory.
 
 The installation directory is referenced later by the optional `systemd` service template and therefore should not be moved after installation.
 
-## 4. Clone the repository
-
-Navigate to the installation directory and clone the repository:
+Create the installation directory and navigate to it:
 
 ```bash
 mkdir -p ~/Projects
 cd ~/Projects
+```
 
+## 4. Clone the repository
+
+Clone the repository:
+
+```bash
 git clone https://github.com/...
 cd MoonPhaseWallpaper
 ```
 
-## 5. Configure the application
+## 5. Run the installer
 
-Run:
+From the project directory, execute:
+
+```bash
+./install.sh
+```
+
+The installer will:
+
+- verify that it is running from a valid MoonPhaseWallpaper project directory,
+- create the required runtime directories,
+- verify that all required software dependencies are installed,
+- optionally install and enable the user-specific `systemd` timer.
+
+If any required dependency is missing, the installer reports the missing software and terminates without making changes.
+
+## 6. Configure MoonPhaseWallpaper
+
+After the installation has completed successfully, start the Configuration Wizard:
 
 ```bash
 ./moon_wallpaper.sh -c
 ```
 
-and follow the Configuration Wizard.
-
-## 6. Optional: Install the systemd timer
-
-Edit the service template
-
-```bash
-templates/systemd/moon_wallpaper.service
-```
-The provided systemd user service template contains the placeholder 
-
-`@INSTALL_DIR@`
-
-Replace it with the absolute path to your MoonPhaseWallpaper installation directory.
-
-Copy the template files into your user systemd directory:
-```bash
-cp templates/systemd/*.service ~/.config/systemd/user/
-cp templates/systemd/*.timer   ~/.config/systemd/user/
-```
-
-Reload the user systemd configuration and enable the timer:
-```bash
-systemctl --user daemon-reload
-
-systemctl --user enable --now moon_wallpaper.timer
-```
-The timer will automatically execute MoonPhaseWallpaper at the beginning of every hour after you log in.
+The Configuration Wizard creates the user configuration file during the first run. On subsequent runs, the existing configuration is loaded and can be modified.
 
 ## 7. Verify the installation
 
@@ -90,7 +84,7 @@ In the installation directory, run:
 ./moon_wallpaper.sh
 ```
 
-The wallpaper should be updated.
+The wallpaper on the configured KDE Activity and screen should be updated.
 
 To verify that the timer is active:
 
@@ -118,4 +112,36 @@ or automatically every hour using the user `systemd` timer.
 
 ## 8. Updating
 
-This section will be added once an installation script becomes available.
+To update MoonPhaseWallpaper:
+
+```bash
+cd ~/Projects/MoonPhaseWallpaper
+git pull
+./install.sh
+```
+
+Running the installer again is safe. It verifies the installation and updates the optional systemd integration if required.
+
+## 9. Uninstallation
+
+To completely remove MoonPhaseWallpaper:
+
+1. Stop and disable the systemd timer:
+
+```bash
+systemctl --user disable --now moon_wallpaper.timer
+```
+
+2. Remove the installed systemd files:
+
+```bash
+rm ~/.config/systemd/user/moon_wallpaper.service
+rm ~/.config/systemd/user/moon_wallpaper.timer
+systemctl --user daemon-reload
+```
+
+3. Delete the MoonPhaseWallpaper project directory:
+
+```bash
+rm -rf ~/Projects/MoonPhaseWallpaper
+```

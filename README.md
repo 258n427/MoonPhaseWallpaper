@@ -51,6 +51,8 @@ MoonPhaseWallpaper requires the following runtime components:
 
 See [INSTALL.md](INSTALL.md).
 
+MoonPhaseWallpaper does not install files outside the project directory except optional user-level systemd service and timer files.
+
 ## Configuration
 
 Run the **Configuration Wizard** once after installation to select the target KDE Activity, target screen, and observer location. These settings are stored in a user-specific configuration file and are used for all subsequent wallpaper updates.
@@ -59,16 +61,16 @@ Run the **Configuration Wizard** once after installation to select the target KD
 
 ## Usage
 
-Generate a wallpaper manually:
-
-```bash
-./moon_wallpaper.sh
-```
-
-Configure MoonPhaseWallpaper:
+Configure MoonPhaseWallpaper (first run):
 
 ```bash
 ./moon_wallpaper.sh -c
+```
+
+Generate or update the wallpaper manually:
+
+```bash
+./moon_wallpaper.sh
 ```
 
 To update the wallpaper automatically every hour, configure the included `systemd` user timer.
@@ -100,5 +102,5 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE).
 ## Acknowledgements
 
 - [NASA Scientific Visualization Studio (SVS)](https://svs.gsfc.nasa.gov/) for providing Moon imagery and datasets
-- ImageMagick for image composition
+- ImageMagick for image processing
 - GNU Awk for enabling astronomical calculations
