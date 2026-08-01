@@ -5,7 +5,7 @@ data/
 images/moon_wallpaper.png
 
 # Development archive (before Git)
-_archive/
+configuration/moon_wallpaper.conf
 
 # Privat project notes
 GitHub_Plan.odt
