@@ -4,16 +4,5 @@ data/
 # Runtime-generated wallpaper
 images/moon_wallpaper.png
 
-# Development archive (before Git)
+# User-specific configuration file
 configuration/moon_wallpaper.conf
-
-# Privat project notes
-GitHub_Plan.odt
-Markdown_Cheatsheet.md
-project_dependencies.md
-
-# LibreOffice lock files
-.~lock*
-
-# scratchboard
-parkplatz.sh
