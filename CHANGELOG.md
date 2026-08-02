@@ -7,7 +7,7 @@ and this project adheres to Semantic Versioning.
 
 ---
 
-## [1.0.0] - 2026-08-03
+## [1.0.0] - 2026-08-02
 
 First public release of MoonPhaseWallpaper.
 
