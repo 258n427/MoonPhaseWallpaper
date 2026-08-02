@@ -45,7 +45,7 @@ cd ~/Projects
 Clone the repository:
 
 ```bash
-git clone https://github.com/...
+git clone https://github.com/ulitreuer/MoonPhaseWallpaper.git
 cd MoonPhaseWallpaper
 ```
 
