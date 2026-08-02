@@ -1,0 +1,54 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to Semantic Versioning.
+
+---
+
+## [1.0.0] - 2026-08-03
+
+First public release of MoonPhaseWallpaper.
+
+### Added
+
+- Automatic KDE Plasma wallpaper generation using NASA Moon imagery
+
+- Interactive Configuration Wizard
+
+- User-specific configuration management
+
+- Support for KDE Plasma Activities
+
+- Automatic hourly wallpaper updates using an optional systemd user timer
+
+- Installation script for dependency checking and setup
+
+- Comprehensive project documentation (README.md, INSTALL.md)
+
+- MIT License
+
+### Changed
+
+- Refactored the application into modular Bash components
+
+- Separated KDE Plasma JavaScript into dedicated source files
+
+- Improved astronomy calculations and code reuse
+
+- Improved runtime logging and diagnostics
+
+- Simplified configuration validation by separating syntax validation from runtime state
+
+- Improved installation workflow with automated setup
+
+### Fixed
+
+- Correct handling of moonrise and moonset edge cases around midnight
+
+- Improved startup reliability after KDE Plasma login
+
+- Configuration Wizard now recovers gracefully from invalid configuration files
+
+- Correct handling of user-specific configuration files in Git repositories
