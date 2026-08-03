@@ -45,7 +45,7 @@ local start end elapsed
         exit 1
     }
 
-    y_pos=1075
+    y_pos=1025
     for (( i=0; i<7; i++ )); do
         rotation=$(calc_moon_rotation \
             "${datestamp[i]}" \
@@ -62,17 +62,17 @@ local start end elapsed
             # Build the caption strings.
             text1="Date:                ${datestamp[0]}"
             text2="Status Time:         ${timestamp[0]}"
-            text3="Moonrise:            ${moonrise[0]}"
-            text4="Moonset:             ${moonset[0]}"
+            text3="Moonset:             ${moonset[0]}"
+            text4="Moonrise:            ${moonrise[0]}"
             text5="Status:              ${moonstatus[0]}"
             text6="Visibility:          ${phase[0]}%"
             text7="Days into Cycle:     ${cycle[0]}"
             text8="Distance from Earth: ${distance[0]} km"
         else
             new_x=267
-            new_y=150
+            new_y=160
             new_pos="+30+0"
-            y_pos=$((y_pos-175))
+            y_pos=$((y_pos-160))
 
             # build the strings for the image caption
             text1="${datestamp[i]}"
@@ -117,14 +117,14 @@ local start end elapsed
                 -font noto-sans-mono-semicondensed-bold \
                 -fill '#ffb600' \
                 -pointsize 15 \
-                -draw "text 1575,825 '$text1'" \
-                -draw "text 1575,850 '$text2'" \
-                -draw "text 1575,875 '$text3'" \
-                -draw "text 1575,900 '$text4'" \
-                -draw "text 1575,925 '$text5'" \
-                -draw "text 1575,950 '$text6'" \
-                -draw "text 1575,975 '$text7'" \
-                -draw "text 1575,1000 '$text8'" \
+                -draw "text 1525,825 '$text1'" \
+                -draw "text 1525,850 '$text2'" \
+                -draw "text 1525,875 '$text3'" \
+                -draw "text 1525,900 '$text4'" \
+                -draw "text 1525,925 '$text5'" \
+                -draw "text 1525,950 '$text6'" \
+                -draw "text 1525,975 '$text7'" \
+                -draw "text 1525,1000 '$text8'" \
                 final.tif
 
         else
@@ -165,7 +165,7 @@ local start end elapsed
                     -bordercolor '#222222' \
                     -border 1 \
                 \) \
-                -geometry "+25+${y_pos}" \
+                -geometry "+75+${y_pos}" \
                 -composite \
                 final.tif
         fi
