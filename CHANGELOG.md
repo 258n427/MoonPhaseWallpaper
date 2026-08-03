@@ -6,6 +6,12 @@ The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0
 and this project adheres to Semantic Versioning.
 
 ---
+## [1.0.1] - 2026-08-03
+
+### Changed
+
+- Generate unique wallpaper filenames to avoid KDE image caching.
+- Increase margins around wallpaper elements to avoid overlap with desktop panels.
 
 ## [1.0.0] - 2026-08-02
 
