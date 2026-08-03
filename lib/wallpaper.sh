@@ -22,13 +22,10 @@
 #         original Activity. To be able to do that we need to determine the currently active
 #         Activity, remember it, switch to the target Activity, change the wallpaper, and change
 #         back to the Activity we remembered.
-#       - Updating the wallpaper only works if the new wallpaper has a different name/path than the
-#         current wallpaper. Otherwise KDE thinks that nothing has changed and will not update the
-#         wallpaper. Therefore we need to briefly set the wallpaper to a 'black image' before
-#         setting the newly created wallpaper.
 #==================================================================================================
 set_wallpaper()
 {
+local wallpaper_name=$1
 local BUS
 local target_activity_id target_screen
 local current_activity_id
@@ -37,6 +34,7 @@ local start end elapsed
 
     start=$(date +%s.%N)
     logv "In set_wallpaper"
+    logd "Name of new wallpaper: $wallpaper_name"
 
     # Get the configured target activity and screen
     conf_get_target_activity target_activity_id target_screen
@@ -49,11 +47,10 @@ local start end elapsed
 
     # Set wallpaper on the configured Activity and screen
     black_image="$wdir/images/black_image.png"
-    wallpaper_image="$wdir/images/moon_wallpaper.png"
+    wallpaper_image="$wdir/images/$wallpaper_name"
 
     js_script=$(<"$wdir/lib/set_wallpaper.js")
     js_script="${js_script//__SCREEN__/$target_screen}"
-    js_script="${js_script//__BLACK_IMAGE__/$black_image}"
     js_script="${js_script//__WALLPAPER_IMAGE__/$wallpaper_image}"
     logd "Executing Plasma JavaScript to update wallpaper."
     get_activity_bus BUS

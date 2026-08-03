@@ -16,9 +16,12 @@
 #
 # Create the final wallpaper image by combining today's large moon image with six smaller images
 # from the preceding days.
+# Output:
+#       $1: the name of the created file
 #==================================================================================================
 image_processing()
 {
+local -n wallpaper_name_ref=$1
 local i
 local rotation
 local new_x
@@ -170,8 +173,14 @@ local start end elapsed
         rm -f "${moonimage[i]}"
     done
 
+    # create a unique wallpaper name current including date and time
+    create_wallpaper_name wallpaper_name_ref
+
+    # Delete all old wallpapers
+     rm -f moon_wallpaper_*.png
+
     # Convert the final image to PNG to reduce file size.
-    magick final.tif moon_wallpaper.png
+    magick final.tif $wallpaper_name_ref
     # Remove last temporary file
     rm -f final.tif
     end=$(date +%s.%N)
@@ -204,6 +213,21 @@ local start end elapsed
     logd "Completed in ${elapsed} seconds."
     logv "================================================================================"
     logv " "
+}
+
+#==================================================================================================
+# create_wallpaper_name
+#
+# Create a unique name for the generated wallpaper created froma basename
+# followed by current date and time
+#==================================================================================================
+create_wallpaper_name()
+{
+local -n name_ref=$1
+local timestamp
+
+    timestamp="$(date '+%Y%m%d_%H%M%S')"
+    name_ref="moon_wallpaper_$timestamp.png"
 }
 
 # --- This is the end, my friend ------------------------------------------------------------------

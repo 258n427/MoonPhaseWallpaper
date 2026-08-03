@@ -2,7 +2,7 @@
 data/
 
 # Runtime-generated wallpaper
-images/moon_wallpaper.png
+images/moon_wallpaper_*.png
 
 # User-specific configuration file
 configuration/moon_wallpaper.conf

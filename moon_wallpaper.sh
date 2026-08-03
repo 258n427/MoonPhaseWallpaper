@@ -157,11 +157,12 @@ download_moon_images
 
 # Create the final image (one big image for current date and time) and 6 small inserts on the final
 # image showing the moon image for the 6 days before today (making it the complete last week)
-image_processing
+# The name of the created image is returned
+image_processing wallpaper_name
 
 # Call the function to set the completed image as the new wallpaper on the second display
 # in Activity 'Main Screen'
-set_wallpaper
+set_wallpaper $wallpaper_name
 
 #--------------------------------------------------------------------------------------------------
 # Once completed, overwrite logfile
