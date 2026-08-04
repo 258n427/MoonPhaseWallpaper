@@ -131,6 +131,15 @@ declare -a moonrise
 declare -a moonset
 declare -a moonstatus
 
+# Verify that configured screen is available/connected.
+# If not then do not try to update the wallpaper and exit gracefully.
+verify_screen "$SCREEN" screen_available
+if (( screen_available == 0 )); then
+    loge "Configured screen is not connected."
+    loge "Wallpaper cannot be updated."
+    exit 0
+fi
+
 # Cleanup (just in case the previous run was interrupted and there are leftovers)
 clear_image_dir
 

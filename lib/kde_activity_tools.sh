@@ -172,4 +172,40 @@ get_num_screens()
     ) || return 1
 }
 
+#==================================================================================================
+# verify_screen
+#
+# Verify, whether a specific screen is currently connected and available.
+# Input:
+#      screen
+#
+# Output:
+#      "1" if screen is available.
+#      "0" if screen is not available
+#==================================================================================================
+verify_screen()
+{
+local test_screen=$1
+local -n screen_available_ref=$2
+local js_script
+
+    logd "In verify_screen"
+    js_script=$(<"$wdir/lib/verify_screen.js")
+    js_script="${js_script//__SCREEN__/$test_screen}"
+    logd "Executing Plasma JavaScript verify availability of screen."
+    get_activity_bus BUS
+    screen_available_ref=$(
+        DISPLAY=:0 \
+        DBUS_SESSION_BUS_ADDRESS="$BUS" \
+        qdbus-qt6 org.kde.plasmashell /PlasmaShell evaluateScript \
+        "$js_script"
+    )
+
+    if (( screen_available_ref == 1 )); then
+        logd "Screen $test_screen is available."
+    else
+        logd "Screen $test_screen is not connected."
+    fi
+}
+
 # --- This is the end, my friend ------------------------------------------------------------------
