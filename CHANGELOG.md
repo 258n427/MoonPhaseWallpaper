@@ -6,6 +6,12 @@ The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0
 and this project adheres to Semantic Versioning.
 
 ---
+## [1.0.2] - 2026-08-04
+
+### Changed
+
+- Improved handling when the configured display is temporarily unavailable (for example when using a KVM switch).
+
 ## [1.0.1] - 2026-08-03
 
 ### Changed
