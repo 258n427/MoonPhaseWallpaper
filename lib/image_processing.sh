@@ -62,8 +62,16 @@ local start end elapsed
             # Build the caption strings.
             text1="Date:                ${datestamp[0]}"
             text2="Status Time:         ${timestamp[0]}"
-            text3="Moonset:             ${moonset[0]}"
-            text4="Moonrise:            ${moonrise[0]}"
+            if [[ "${moonrise[0]}" == "--" || "${moonset[0]}" == "--" ]]; then
+                text3="Moonrise:            ${moonrise[0]}"
+                text4="Moonset:             ${moonset[0]}"
+            elif [[ "${moonset[0]}" < "${moonrise[0]}" ]]; then
+                text3="Moonset:             ${moonset[0]}"
+                text4="Moonrise:            ${moonrise[0]}"
+            else
+                text3="Moonrise:            ${moonrise[0]}"
+                text4="Moonset:             ${moonset[0]}"
+            fi
             text5="Status:              ${moonstatus[0]}"
             text6="Visibility:          ${phase[0]}%"
             text7="Days into Cycle:     ${cycle[0]}"
