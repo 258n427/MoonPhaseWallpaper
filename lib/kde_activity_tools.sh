@@ -172,30 +172,4 @@ get_num_screens()
     ) || return 1
 }
 
-#==================================================================================================
-# wait_for_plasma_ready
-#
-# PlasmaShell may not have finished initializing immediately after login.
-# Wait up to 20 seconds for the evaluateScript DBus interface to become available.
-#==================================================================================================
-wait_for_plasma_ready()
-{
-local i
-local num_screens
-readonly PLASMA_STARTUP_TIMEOUT=20
-readonly PLASMA_STARTUP_RETRY_INTERVAL=2
-
-local max_attempts=$((PLASMA_STARTUP_TIMEOUT / PLASMA_STARTUP_RETRY_INTERVAL))
-
-    for ((i=0; i<max_attempts; i++)); do
-        if get_num_screens num_screens; then
-            return 0
-        fi
-        logd "Waiting for Plasma... (attempt $((i + 1))/$max_attempts)"
-        sleep "$PLASMA_STARTUP_RETRY_INTERVAL"
-    done
-
-    return 1
-}
-
 # --- This is the end, my friend ------------------------------------------------------------------

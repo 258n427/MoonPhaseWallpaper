@@ -83,12 +83,6 @@ done
 # Define all working directories
 set_directories
 
-# Wait for KDE Plasma to finish initialization after login.
-if ! wait_for_plasma_ready; then
-    logv "Plasma did not become ready within 20 seconds."
-    exit 0
-fi
-
 # Start configuration wizard when called with option '-c'
 if $configuration_mode; then
     configure_application
