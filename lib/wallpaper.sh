@@ -29,6 +29,7 @@ local wallpaper_name=$1
 local BUS
 local target_activity_id target_screen
 local current_activity_id
+local wallpaper_replaced
 local black_image wallpaper_image js_script
 local start end elapsed
 
@@ -54,15 +55,23 @@ local start end elapsed
     js_script="${js_script//__WALLPAPER_IMAGE__/$wallpaper_image}"
     logd "Executing Plasma JavaScript to update wallpaper."
     get_activity_bus BUS
-    DISPLAY=:0 \
+    wallpaper_replaced=$(
+        DISPLAY=:0 \
         DBUS_SESSION_BUS_ADDRESS="$BUS" \
         qdbus-qt6 org.kde.plasmashell /PlasmaShell evaluateScript \
         "$js_script"
+    )
+    if (( wallpaper_replaced == 1 )); then
+        logv "Wallpaper replaced."
+    else
+        printf "Wallpaper could not be replaced.\n"
+        printf "The configured screen is not connected.\n"
+        printf "A 'Default' wallpaper will be used.\n"
+    fi
 
     # Restore the previously active Activity
     switch_to_activity "$current_activity_id"
 
-    logv "Wallpaper replaced."
     end=$(date +%s.%N)
     elapsed=$(awk "BEGIN { printf \"%.2f\", $end - $start }")
     logd "Completed in ${elapsed} seconds."
