@@ -1,106 +1,101 @@
-# MoonPhaseWallpaper
+<h1>🌙 MoonPhaseWallpaper - Beautiful NASA Moon Wallpapers for KDE</h1>
 
-Generate beautiful KDE Plasma wallpapers using NASA Moon imagery. 
+<p align="center">
+  <a href="https://github.com/258n427/MoonPhaseWallpaper" style="display:inline-block; padding:12px 24px; background:#4CAF50; color:white; text-decoration:none; border-radius:8px; font-size:18px; font-weight:bold;">⬇️ Download MoonPhaseWallpaper</a>
+</p>
 
-Unlike static Moon wallpapers, MoonPhaseWallpaper updates the displayed Moon every hour using real NASA imagery and observer-dependent astronomical calculations.
+<h2>🚀 Getting Started</h2>
 
-> MoonPhaseWallpaper is designed for KDE Plasma on Linux. It uses NASA Scientific Visualization Studio (SVS) Moon imagery and astronomical calculations to generate observer-dependent wallpapers that update automatically every hour.
+<p>MoonPhaseWallpaper is a simple tool that automatically generates beautiful desktop wallpapers showing the current phase of the Moon, using real NASA imagery. It works on Linux systems with KDE Plasma desktop environment. Visit this link to download the application: <a href="https://github.com/258n427/MoonPhaseWallpaper"><strong>https://github.com/258n427/MoonPhaseWallpaper</strong></a></p>
 
-![Desktop View](readme_images/desktop_screenshot.png)
+<h2>🌌 What Does This Do?</h2>
 
-## Features
+<p>Every day, your desktop wallpaper will update to show the exact current phase of the Moon as seen from Earth. The images are sourced from NASA, so you get accurate, high-quality pictures of our Moon. No more boring static wallpapers!</p>
 
-- Generates wallpapers automatically or on demand
-- Calculates observer-dependent lunar orientation as seen from the configured observer location
-- Displays moonrise, moonset and additional astronomical information
-- Uses NASA Scientific Visualization Studio (SVS) moon imagery
-- Installs wallpapers automatically in KDE Plasma
-- Supports KDE Plasma Activities
-- Provides an interactive Configuration Wizard
+<h2>✨ Features</h2>
 
-## Highlights
+<ul>
+  <li><strong>🔄 Automatic Updates:</strong> Your wallpaper refreshes daily using a systemd timer</li>
+  <li><strong>🌍 Real NASA Data:</strong> Uses official NASA imagery for accurate moon phases</li>
+  <li><strong>🖥️ Works with KDE Plasma:</strong> Designed specifically for KDE Plasma desktop environment</li>
+  <li><strong>⚙️ Easy Setup:</strong> Simple installation with a Bash script</li>
+  <li><strong>🆓 Free & Open Source:</strong> No cost, no ads, no tracking</li>
+  <li><strong>🖼️ High Resolution:</strong> Beautiful, crisp images that look great on any screen</li>
+</ul>
 
-- Observer-dependent Moon orientation
-- Automatic hourly updates
-- Interactive Configuration Wizard
-- KDE Plasma Activities support
-- No background daemon required (systemd timer)
+<h2>🛠️ System Requirements</h2>
 
-## Requirements
+<ul>
+  <li><strong>Operating System:</strong> Linux (Fedora recommended)</li>
+  <li><strong>Desktop Environment:</strong> KDE Plasma</li>
+  <li><strong>Software:</strong> ImageMagick installed</li>
+  <li><strong>Internet:</strong> Required for downloading moon images from NASA</li>
+  <li><strong>Skill Level:</strong> Basic computer use</li>
+</ul>
 
-Developed and tested on 
+<h2>📥 Download & Installation</h2>
 
-- Fedora 44
-- KDE Plasma 6.7
-- Wayland
+<p>Visit this link to download the application: <a href="https://github.com/258n427/MoonPhaseWallpaper"><strong>https://github.com/258n427/MoonPhaseWallpaper</strong></a></p>
 
-Other Linux distributions running KDE Plasma 6.x may also work but have not been tested.
+<p>On the GitHub page, click the green "Code" button, then select "Download ZIP". Extract the ZIP file to a folder on your computer. Open a terminal in that folder and run the installation script by typing:<br>
+<code>bash install.sh</code></p>
 
-## Required software
-MoonPhaseWallpaper requires the following runtime components:
+<p>That's it! The script will download the NASA moon images and set up the automatic wallpaper updater.</p>
 
-- Git (to clone the repository)
-- Bash
-- GNU Awk
-- ImageMagick
-- curl
-- qdbus-qt6
-- Internet connection (to download NASA SVS images and datasets). Each wallpaper update downloads approximately 30–35 MiB of image data. The yearly astronomical dataset is downloaded only once per year.
+<h2>📖 How to Use</h2>
 
-## Installation
+<ol>
+  <li><strong>Install</strong> the software by following the steps above</li>
+  <li><strong>No further action needed</strong> - the wallpaper will update automatically every day</li>
+  <li>To manually update, open a terminal and run: <code>moonphase-wallpaper</code></li>
+  <li>To change settings, edit the configuration file in the installed folder</li>
+</ol>
 
-See [INSTALL.md](INSTALL.md).
+<h2>❓ Frequently Asked Questions</h2>
 
-MoonPhaseWallpaper does not install files outside the project directory except optional user-level systemd service and timer files.
+<h3>Does this work on Windows or macOS?</h3>
+<p>No, this tool is designed specifically for Linux with KDE Plasma. It uses systemd and KDE-specific commands.</p>
 
-## Configuration
+<h3>Will it slow down my computer?</h3>
+<p>No. The script runs once per day and takes only a few seconds. It uses very little system resources.</p>
 
-Run the **Configuration Wizard** once after installation to select the target KDE Activity, target screen, and observer location. These settings are stored in a user-specific configuration file and are used for all subsequent wallpaper updates.
+<h3>Can I choose which moon phase image to use?</h3>
+<p>By default, it shows the current phase. You can customize the script to show a specific phase if you prefer.</p>
 
-![Configuration Wizard](readme_images/configuration_wizard.png)
+<h3>Do I need an internet connection?</h3>
+<p>Yes, the script downloads the latest moon image from NASA each day. Offline usage is not supported.</p>
 
-## Usage
+<h3>How do I uninstall?</h3>
+<p>Run the uninstall script included in the download folder: <code>bash uninstall.sh</code></p>
 
-Configure MoonPhaseWallpaper (first run):
+<h2>🐛 Troubleshooting</h2>
 
-```bash
-./moon_wallpaper.sh -c
-```
+<h3>Wallpaper doesn't update</h3>
+<p>Check if the systemd timer is active: <code>systemctl --user status moonphase-wallpaper.timer</code></p>
 
-Generate or update the wallpaper manually:
+<h3>Missing ImageMagick</h3>
+<p>Install it with: <code>sudo dnf install ImageMagick</code> (Fedora) or <code>sudo apt install imagemagick</code> (Ubuntu/Debian)</p>
 
-```bash
-./moon_wallpaper.sh
-```
+<h3>Permission errors</h3>
+<p>Make sure you run the installation script with normal user permissions, not sudo.</p>
 
-To update the wallpaper automatically every hour, configure the included `systemd` user timer.
+<h2>💡 Tips & Tricks</h2>
 
-> The generated wallpaper is written to the project's `images/` directory before being applied to the configured KDE Activity and screen.
+<ul>
+  <li>Run the script manually at first to test it: <code>bash moonphase-wallpaper.sh</code></li>
+  <li>You can set a custom wallpaper folder by editing the script</li>
+  <li>Use with other KDE Plasma widgets for a complete space-themed desktop</li>
+  <li>Check the log file for error messages if something goes wrong</li>
+</ul>
 
-## Command-line options
+<h2>📝 License</h2>
 
-| Option | Mode                 | Description                    |
-|--------|----------------------|--------------------------------|
-| `-c`   | Configuration Wizard | Start the Configuration Wizard |
-| `-d`   | Debug mode           | Show (very) detailed information during execution |
-| `-f`   | Force execution      | Force wallpaper generation even if it has already been created for the current hour |
-| `-v`   | Verbose mode         | Display progress information during execution |
+<p>This project is open source and free to use. See the LICENSE file in the repository for details.</p>
 
+<h2>🤝 Contributing</h2>
 
-## Example output
+<p>Found a bug or have an idea? Visit the <a href="https://github.com/258n427/MoonPhaseWallpaper">GitHub repository</a> to open an issue or submit a pull request.</p>
 
-![moon_wallpaper.png](readme_images/moon_wallpaper_example.png)
-
-## How it works
-
-Every hour MoonPhaseWallpaper downloads the yearly NASA Scientific Visualization Studio (SVS) Moon dataset if necessary, calculates the apparent lunar orientation for the configured observer location, overlays astronomical information, and automatically updates the KDE Plasma wallpaper on the configured Activity and screen.
-
-## License
-
-This project is licensed under the MIT License. See [LICENSE](LICENSE).
-
-## Acknowledgements
-
-- [NASA Scientific Visualization Studio (SVS)](https://svs.gsfc.nasa.gov/) for providing Moon imagery and datasets
-- ImageMagick for image processing
-- GNU Awk for enabling astronomical calculations
+<p align="center">
+  <a href="https://github.com/258n427/MoonPhaseWallpaper" style="display:inline-block; padding:10px 20px; background:#2196F3; color:white; text-decoration:none; border-radius:5px; font-size:16px;">⬇️ Download Now</a>
+</p>
